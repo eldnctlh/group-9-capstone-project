@@ -1,6 +1,4 @@
-
-This is the lottery app of Group 9
-
+This is the group 9 capstone project
 
 ## Getting Started
 
@@ -9,7 +7,6 @@ Install dependencies with:
 ```
 yarn install
 ```
-
 
 Then, run the development server:
 
