@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { ethers, Signer } from "ethers"
-import { truncateEthAddress } from "src/utils/helpers"
+import { truncateEthAddress } from "utils/helpers"
+import Button from "components/shared/Button"
 
 const Header = () => {
     const [provider, setProvider] = useState<any>(null)
@@ -42,13 +43,10 @@ const Header = () => {
     }
 
     return (
-        <div className="py-2">
-            <button
-                className="bg-blue-300 hover:bg-blue-400 text-blue-800 font-bold py-2 px-4 rounded-xl inline-flex items-center z-10 relative"
-                onClick={account ? handleDisconnectWallet : handleConnectWallet}
-            >
+        <div className="container mx-auto py-2">
+            <Button onClick={account ? handleDisconnectWallet : handleConnectWallet}>
                 {account ? truncateEthAddress(account) : "Connect"}
-            </button>
+            </Button>
             {account && userBalance ? (
                 <span className="bg-blue-200 text-blue-800 -m-4 py-2 px-4 pl-6 font-bold rounded-r-xl inline-flex items-center">
                     {(+userBalance).toFixed(2)} ETH

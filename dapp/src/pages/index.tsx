@@ -1,12 +1,12 @@
 import type { NextPage } from "next"
-import styles from "../styles/Home.module.css"
-import Header from "@/components/Header"
+import Dashboard from "components/Dashboard"
+import Layout from "components/Layout"
 
 const Home: NextPage = () => {
     return (
-        <div className={styles.container}>
-            <Header />
-        </div>
+        <Layout>
+            <Dashboard />
+        </Layout>
     )
 }
 
