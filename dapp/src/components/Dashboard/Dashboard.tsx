@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react"
 import { DateTime } from "luxon"
 import Button from "components/shared/Button"
+import Modal from "components/shared/Modal"
+import JoinHackaton from "components/forms/JoinHackaton"
 
 const Dashboard = () => {
     const [deadline, setDeadline] = useState<string>("")
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
 
     useEffect(() => {
         setDeadline(DateTime.now().toString())
@@ -32,7 +35,7 @@ const Dashboard = () => {
                                 would do – hack your way to the top. Build the next big thing on
                                 NEAR.
                             </p>
-                            <Button onClick={() => console.log(1)}>Join Hackaton</Button>
+                            <Button onClick={() => setIsModalOpen(true)}>Join Hackaton</Button>
                         </div>
                         <div className="col-span-2 bg-zinc-700 p-3">
                             <div className="text-xs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 bg-green-300 text-green-800 rounded-full">
@@ -80,6 +83,11 @@ const Dashboard = () => {
                     </div>
                 </div>
             </div>
+            <Modal title="Join Hackaton" isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+                <div className="w-96">
+                    <JoinHackaton />
+                </div>
+            </Modal>
         </div>
     )
 }
