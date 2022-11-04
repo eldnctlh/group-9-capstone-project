@@ -13,23 +13,23 @@ const JoinHackaton: React.FC = () => {
     return (
         <form onSubmit={handleSubmit((data) => console.log(data))}>
             <Input
-                {...register("firstName", { required: true })}
                 label="First Name"
                 placeholder="First Name"
+                error={errors.firstName && "First name is required."}
+                {...register("firstName", { required: true })}
             />
-            {errors.firstName && <p className="text-red-500">First name is required.</p>}
             <Input
                 placeholder="Last Name"
                 label="Last Name"
+                error={errors.lastName && "Last name is required."}
                 {...register("lastName", { required: true })}
             />
-            {errors.lastName && <p className="text-red-500">Last name is required.</p>}
             <Input
                 placeholder="Age"
                 label="Age"
+                error={errors.age && "Please enter number for age."}
                 {...register("age", { required: true, pattern: /\d+/ })}
             />
-            {errors.age && <p className="text-red-500">Please enter number for age.</p>}
             <Button className="mt-5">Submit</Button>
         </form>
     )

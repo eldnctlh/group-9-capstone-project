@@ -3,7 +3,7 @@ import { ethers, Signer } from "ethers"
 import { truncateEthAddress } from "utils/helpers"
 import Button from "components/shared/Button"
 
-const Header = () => {
+const Header: React.FC<Props> = () => {
     const [account, setAccount] = useState<string>("")
     const [userBalance, setUserBalance] = useState<string>("")
 
@@ -12,7 +12,7 @@ const Header = () => {
             window.ethereum.on("accountsChanged", function (accounts) {
                 handleConnectWallet()
             })
-            window.ethereum.on("networkChanged", function (accounts) {
+            window.ethereum.on("chainChanged", function (accounts) {
                 handleConnectWallet()
             })
         }
