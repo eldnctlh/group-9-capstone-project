@@ -43,7 +43,7 @@ const Header = () => {
     }
 
     return (
-        <div className="container mx-auto py-2">
+        <div className="container mx-auto py-2 flex justify-end items-center">
             <Button onClick={account ? handleDisconnectWallet : handleConnectWallet}>
                 {account ? truncateEthAddress(account) : "Connect"}
             </Button>
