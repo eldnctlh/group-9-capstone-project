@@ -1,8 +1,14 @@
 import React, { useEffect, useState } from "react"
-const { DateTime } = require("luxon")
+import { DateTime } from "luxon"
 import Button from "components/shared/Button"
 
 const Dashboard = () => {
+    const [deadline, setDeadline] = useState<string>("")
+
+    useEffect(() => {
+        setDeadline(DateTime.now().toString())
+    }, [])
+
     const renderPrize = () => (
         <div>
             <h3 className="my-2 text-lg font-bold text-gray-100">
@@ -28,12 +34,12 @@ const Dashboard = () => {
                             </p>
                             <Button onClick={() => console.log(1)}>Join Hackaton</Button>
                         </div>
-                        <div className="col-span-2 bg-zinc-600 p-3">
+                        <div className="col-span-2 bg-zinc-700 p-3">
                             <div className="text-xs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 bg-green-300 text-green-800 rounded-full">
                                 17 days to deadline
                             </div>
                             <h3 className="my-4 text-lg font-bold text-white">
-                                Deadline {DateTime.now().toString()}
+                                Deadline {deadline}
                             </h3>
                         </div>
                     </div>

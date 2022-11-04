@@ -5,7 +5,6 @@ import Button from "components/shared/Button"
 
 const Header = () => {
     const [provider, setProvider] = useState<any>(null)
-    const [errorMessage, setErrorMessage] = useState<string>("")
     const [account, setAccount] = useState<string>("")
     const [userBalance, setUserBalance] = useState<string>("")
 
@@ -21,8 +20,6 @@ const Header = () => {
             provider.send("eth_requestAccounts", []).then(async () => {
                 await handleChangeAccount(provider.getSigner())
             })
-        } else {
-            setErrorMessage("Please Install Metamask!!!")
         }
     }
 
@@ -52,7 +49,6 @@ const Header = () => {
                     {(+userBalance).toFixed(2)} ETH
                 </span>
             ) : null}
-            {errorMessage}
         </div>
     )
 }
