@@ -4,19 +4,24 @@ import { truncateEthAddress } from "utils/helpers"
 import Button from "components/shared/Button"
 
 const Header = () => {
-    const [provider, setProvider] = useState<any>(null)
     const [account, setAccount] = useState<string>("")
     const [userBalance, setUserBalance] = useState<string>("")
 
     useEffect(() => {
         if (window) {
-            const provider = new ethers.providers.Web3Provider(window.ethereum)
-            setProvider(provider)
+            window.ethereum.on("accountsChanged", function (accounts) {
+                handleConnectWallet()
+            })
+            window.ethereum.on("networkChanged", function (accounts) {
+                handleConnectWallet()
+            })
         }
     }, [])
 
     const handleConnectWallet = () => {
         if (window.ethereum) {
+            const provider = new ethers.providers.Web3Provider(window.ethereum)
+
             provider.send("eth_requestAccounts", []).then(async () => {
                 await handleChangeAccount(provider.getSigner())
             })
@@ -36,6 +41,8 @@ const Header = () => {
     }
 
     const getuserBalance = async (address: string) => {
+        const provider = new ethers.providers.Web3Provider(window.ethereum)
+
         const balance = await provider.getBalance(address, "latest")
     }
 
