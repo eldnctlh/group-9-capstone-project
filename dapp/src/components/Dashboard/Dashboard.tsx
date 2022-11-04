@@ -24,7 +24,7 @@ const Dashboard = () => {
                 <div className="container mx-auto">
                     <div className="grid grid-cols-5 gap-4">
                         <div className="col-span-3">
-                            <h2 className="text-4xl font-bold text-white">
+                            <h2 className="text-4xl font-bold text-gray-100">
                                 NEAR MetaBUILD III Hackathon
                             </h2>
                             <p className="my-4 text-lg text-gray-400">
@@ -38,9 +38,18 @@ const Dashboard = () => {
                             <div className="text-xs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 bg-green-300 text-green-800 rounded-full">
                                 17 days to deadline
                             </div>
-                            <h3 className="my-4 text-lg font-bold text-white">
+                            <h3 className="my-4 text-lg font-bold text-gray-100">
                                 Deadline {deadline}
                             </h3>
+                            <div className="h-px w-full bg-zinc-400"></div>
+                            <div className="flex justify-between">
+                                <h3 className="my-4 text-lg text-gray-200">
+                                    <span className="font-bold">$1,000,000</span> in prizes
+                                </h3>
+                                <h3 className="my-4 text-lg text-gray-200">
+                                    <span className="font-bold">25</span> participants
+                                </h3>
+                            </div>
                         </div>
                     </div>
                 </div>
