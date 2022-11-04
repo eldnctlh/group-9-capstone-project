@@ -4,6 +4,7 @@
 
 html,
 body {
+    color-scheme: dark;
     padding: 0;
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell,
@@ -19,11 +20,11 @@ a {
     box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
     html {
         color-scheme: dark;
     }
     body {
         color: white;
     }
-}
+} */
