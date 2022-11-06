@@ -1,27 +1,42 @@
-import { createContext, useContext, useMemo, useState } from "react"
+import { Signer } from "ethers"
+import { createContext, useContext, useEffect, useMemo, useState } from "react"
 
 export const WalletContext = createContext(null)
 
 type Wallet = {
     address: null | string
+    signer: null | Signer
 }
 
 const defaultWallet: Wallet = {
     address: null,
+    signer: null,
 }
 
 export const useWalletContext = () => {
     const [wallet, setWallet] = useState(defaultWallet)
 
-    const setWalletAddress = (address: string | null) => setWallet({ ...wallet, address })
+    const disconnectWallet = () => setWallet(defaultWallet)
+
+    useEffect(() => {
+        if (wallet.signer) {
+            ;(async () => {
+                const address = await wallet.signer.getAddress()
+                setWallet({ ...wallet, address })
+            })()
+        }
+    }, [wallet.signer])
+
+    const setWalletSigner = (signer: Signer) => setWallet({ ...wallet, signer })
 
     const walletContext = useMemo(
         () => ({
             wallet,
             setWallet,
-            setWalletAddress,
+            setWalletSigner,
+            disconnectWallet,
         }),
-        [wallet, setWallet, setWalletAddress]
+        [wallet, setWallet, setWalletSigner, disconnectWallet]
     )
 
     return walletContext
