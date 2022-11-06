@@ -21,7 +21,7 @@ export const useWalletContext = () => {
             setWallet,
             setWalletAddress,
         }),
-        [wallet, setWallet]
+        [wallet, setWallet, setWalletAddress]
     )
 
     return walletContext

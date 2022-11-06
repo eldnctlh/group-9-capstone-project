@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
+import { toast } from "react-toastify"
 import Input from "components/shared/Input"
 import Button from "components/shared/Button"
+import useWeb3Storage from "utils/hooks/useWeb3Storage"
 
 const HackatonExtraData: React.FC = () => {
     const [coverImageSrc, setCoverImageSrc] = useState<string>("")
     const [profileImageSrc, setProfileImageSrc] = useState<string>("")
+    const [isLoading, setIsLoading] = useState<boolean>(false)
+    const { makeFileObjects, storeFiles } = useWeb3Storage()
 
     const {
         register,
@@ -33,12 +37,27 @@ const HackatonExtraData: React.FC = () => {
         }
     }, [watchCoverImage])
 
-    const onSubmit = (data: any) => {
-        console.log(data)
+    const onSubmit = async (data: any) => {
+        setIsLoading(true)
+        const fileName = `${data.name}.json`
         const formData = new FormData()
         formData.append("profileImage", data.profileImage[0])
         formData.append("coverImage", data.coverImage[0])
-        console.log(formData)
+        // upload to ipfs
+
+        console.log("upload started")
+        const fileToUpload = makeFileObjects(data, fileName)
+        try {
+            const ipfsRes = await storeFiles(fileToUpload)
+            const responseUrl = `https://${ipfsRes}.ipfs.w3s.link/${fileName}`
+            toast(`Successfuly uploaded to ${responseUrl}`)
+            console.log("upload done", responseUrl)
+        } catch (err) {
+            console.log(err)
+            toast.error(err.message)
+        }
+
+        setIsLoading(false)
     }
 
     return (
@@ -74,7 +93,9 @@ const HackatonExtraData: React.FC = () => {
                 <img className="w-full my-5" src={coverImageSrc} alt="coverImage" />
             ) : null}
 
-            <Button className="mt-5">Create Hackaton</Button>
+            <Button isLoading={isLoading} className="mt-5">
+                Add data
+            </Button>
         </form>
     )
 }
