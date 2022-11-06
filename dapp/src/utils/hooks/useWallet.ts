@@ -13,6 +13,8 @@ const defaultWallet: Wallet = {
 export const useWalletContext = () => {
     const [wallet, setWallet] = useState(defaultWallet)
 
+    const setWalletAddress = (address: string | null) => setWallet({ ...wallet, address })
+
     const walletContext = useMemo(
         () => ({
             wallet,
@@ -21,8 +23,6 @@ export const useWalletContext = () => {
         }),
         [wallet, setWallet]
     )
-
-    const setWalletAddress = (address: string | null) => setWallet({ ...wallet, address })
 
     return walletContext
 }
