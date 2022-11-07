@@ -2232,7 +2232,7 @@ __metadata:
     chai: ^4.2.0
     dotenv: ^16.0.3
     ethers: ^5.4.7
-    hardhat: ^2.11.1
+    hardhat: ^2.12.2
     hardhat-gas-reporter: ^1.0.8
     mocha: ^10.1.0
     solidity-coverage: ^0.8.0
@@ -3483,7 +3483,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hardhat@npm:^2.11.1":
+"hardhat@npm:^2.12.2":
   version: 2.12.2
   resolution: "hardhat@npm:2.12.2"
   dependencies:

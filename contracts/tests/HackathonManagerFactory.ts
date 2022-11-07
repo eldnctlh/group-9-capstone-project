@@ -3,10 +3,10 @@ import { Wallet } from "@ethersproject/wallet";
 import { expect } from "chai";
 import { ethers, network } from "hardhat";
 
-describe("Escrow", function () {
+describe("HackathonManagerFactory", function () {
 
     describe("Deployment", function () {
-        it("Anyone should be able to deploy", async function () {
+        it("Deployer is Owner of HacatonManagerFactory", async function () {
         
             // fund random address with eth
             const random = Wallet.createRandom();
@@ -17,10 +17,12 @@ describe("Escrow", function () {
         
             const signer = new ethers.Wallet(random, ethers.provider);
             
-            const Escrow = await ethers.getContractFactory("Escrow", signer);
-            const escrow = await Escrow.deploy();
+            const HackathonManagerFactory = await ethers.getContractFactory("HackathonManagerFactory", signer);
+            const hackathonManagerFactory = await HackathonManagerFactory.deploy();
             
-            expect(await escrow.owner()).to.equal(signer.address);
+            
+            
+            expect(await hackathonManagerFactory.Owner()).to.equal(signer.address);
         });
     });
 
