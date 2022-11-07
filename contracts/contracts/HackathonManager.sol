@@ -38,7 +38,8 @@ contract HackathonManager is Ownable {
         string _trackName;
         uint256 _trackPoolAmount;
         uint256 _currentPrizeTotal;
-        Prize[] _prizes;
+        // Prize[] _prizes;
+        mapping(string => Prize) _prizes;
     }
 
     mapping (string => Track) _hackathonTracks;
@@ -165,18 +166,20 @@ contract HackathonManager is Ownable {
         return false;
     }
 
-    function createTrack(string memory _trackName, uint256 _trackPoolAmount) external cannotExceedFundedAmount(_trackPoolAmount) onlyCommitteeMembers(msg.sender) {
-        require(!trackExists(_trackName), "This track already exists");
-        Prize[] memory initPrizeList;
-        _hackathonTracks[_trackName] = Track(_trackName, _trackPoolAmount, 0, initPrizeList);
-        _currentTrackTotal += _trackPoolAmount;
-        emit TrackCreated(_trackName, _trackPoolAmount);
+    function createTrack(string memory _newTrackName, uint256 _newTrackPoolAmount) external cannotExceedFundedAmount(_newTrackPoolAmount) onlyCommitteeMembers(msg.sender) {
+        require(!trackExists(_newTrackName), "This track already exists");
+        Track storage newTrack = _hackathonTracks[_newTrackName];
+        newTrack._currentPrizeTotal = 0;
+        newTrack._trackName = _newTrackName;
+        newTrack._trackPoolAmount = _newTrackPoolAmount;
+        _currentTrackTotal += _newTrackPoolAmount;
+        emit TrackCreated(_newTrackName, _newTrackPoolAmount);
     }
 
     function addPrizeToTrack(string memory _trackName, string memory _prizeName, uint256 _amount) external trackPrizeTotalCannotExceedTrackPoolAmount(_trackName, _amount) onlyCommitteeMembers(msg.sender) prizeNameShouldBeUnique(_prizeName){
         require(trackExists(_trackName), "The track mentioned does not exist");
         Participant memory initParticipant = Participant("", "", "", false, false, false, address(0));
-        _hackathonTracks[_trackName]._prizes.push(Prize(_prizeName, initParticipant, _amount, false));
+        _hackathonTracks[_trackName]._prizes[_prizeName] = (Prize(_prizeName, initParticipant, _amount, false));
         _prizeNameTaken[_prizeName] = true;
         emit PrizeAddedToTrack(_trackName, _prizeName, _amount);
     }
@@ -186,19 +189,12 @@ contract HackathonManager is Ownable {
         require(_prizeNameTaken[_prize] == true, "The prize mentioned does not exist!");
         Participant memory winner = _hackathonParticipants[_team];
         winner._isWinner = true;
-        Prize[] memory trackPrizes = _hackathonTracks[_track]._prizes;
-        uint256 prizeIndex;
-        for(uint256 i = 0; i < trackPrizes.length; i++){
-            if (keccak256(bytes(trackPrizes[i]._name)) == keccak256(bytes(_prize))){
-                prizeIndex = i;
-            }
-        }
-        require(trackPrizes[prizeIndex]._paid != true, "Prize has already been paid");
-        trackPrizes[prizeIndex]._winner = winner;
+        require(_hackathonTracks[_track]._prizes[_prize]._paid != true, "Prize has already been paid");
+        _hackathonTracks[_track]._prizes[_prize]._winner = winner;
         emit PrizeWinnerCaptured(_track, _prize, _team);
         address payable receiver = payable(winner._participantAddress);
-        trackPrizes[prizeIndex]._paid = true;
-        receiver.transfer(trackPrizes[prizeIndex]._amount);
-        emit PrizePaid(_team, receiver, trackPrizes[prizeIndex]._amount);
+        _hackathonTracks[_track]._prizes[_prize]._paid = true;
+        receiver.transfer(_hackathonTracks[_track]._prizes[_prize]._amount);
+        emit PrizePaid(_team, receiver, _hackathonTracks[_track]._prizes[_prize]._amount);
     }
 }
