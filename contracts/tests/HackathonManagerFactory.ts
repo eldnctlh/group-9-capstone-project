@@ -21,9 +21,32 @@ describe("HackathonManagerFactory", function () {
             const hackathonManagerFactory = await HackathonManagerFactory.deploy();
             
             
-            
             expect(await hackathonManagerFactory.Owner()).to.equal(signer.address);
         });
+
+        it("Triggers the HackCreated Event when a hack is created", async function () {
+            const HackathonManagerFactory = await ethers.getContractFactory("HackathonManagerFactory");
+            const hackathonManagerFactory = await HackathonManagerFactory.deploy();
+            
+            const hackName = "new hack";
+
+            await expect(hackathonManagerFactory.createNewHack(hackName))
+                .to.emit(hackathonManagerFactory,"HackCreated");
+        });
+            
+        it("Reverts when deploymentfee too low", async function() {
+
+            const HackathonManagerFactory = await ethers.getContractFactory("HackathonManagerFactory");
+            const hackathonManagerFactory = await HackathonManagerFactory.deploy();
+            
+            const hackName = "revert hack";
+
+            // TODO: add value to setFee
+            await hackathonManagerFactory.setFee();
+            
+            await expect(hackathonManagerFactory.createNewHack(hackName, {value: 10}))
+                .to.revertedWithoutReason();
+        } );
     });
 
 });
