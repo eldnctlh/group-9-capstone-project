@@ -3,12 +3,11 @@ import { ethers, Signer } from "ethers"
 import { truncateEthAddress } from "utils/helpers"
 import Button from "components/shared/Button"
 import useWallet from "utils/hooks/useWallet"
-import useHackatonContract from "utils/hooks/useHackatonContract"
+import useHackatonManagerFactory from "utils/hooks/useHackatonManagerFactory"
 
 const Header: React.FC = () => {
     const { wallet, setWalletSigner, disconnectWallet } = useWallet()
     const [userBalance, setUserBalance] = useState<string>("")
-    const { initContract } = useHackatonContract()
 
     useEffect(() => {
         if (window) {
@@ -20,12 +19,6 @@ const Header: React.FC = () => {
             })
         }
     }, [])
-
-    useEffect(() => {
-        if (wallet.address) {
-            initContract()
-        }
-    }, [wallet.address])
 
     const handleConnectWallet = () => {
         if (window.ethereum) {
