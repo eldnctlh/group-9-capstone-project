@@ -13,7 +13,6 @@ contract HackathonManager is Ownable {
     address public _contractFactory;
     address public _hackOwner;
     string public _hackathonName;
-    Prize[] prizeList;
     HackathonState _state;
 
 
@@ -38,14 +37,13 @@ contract HackathonManager is Ownable {
         string _trackName;
         uint256 _trackPoolAmount;
         uint256 _currentPrizeTotal;
-        // Prize[] _prizes;
         mapping(string => Prize) _prizes;
     }
 
-    mapping (string => Track) _hackathonTracks;
-    mapping (string => Participant) _hackathonParticipants;
-    mapping (address => bool) _hackathonCommitteeMembers;
-    mapping (string => bool) _prizeNameTaken;
+    mapping (string => Track) public _hackathonTracks;
+    mapping (string => Participant) public _hackathonParticipants;
+    mapping (address => bool) public _hackathonCommitteeMembers;
+    mapping (string => bool) public _prizeNameTaken;
     
     event HackathonCreated(string _hack, address _creator);
     event HackathonFunded(uint _amountFunded, uint _currentHackatonFundBalance);
@@ -156,7 +154,6 @@ contract HackathonManager is Ownable {
         } else {
             emit ProjectRejected(_team, _hackathonParticipants[_team]._project, msg.sender);
         }
-        
     }
 
     function trackExists(string memory _trackName) internal view returns(bool){
