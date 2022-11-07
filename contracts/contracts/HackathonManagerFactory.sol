@@ -7,7 +7,7 @@ contract HackathonManagerFactory {
 
     address public Owner;
     uint256 public deploymentFee;
-    mapping (string => HackathonManager) deployedHackathonManagerContractMapping;
+    mapping (string => HackathonManager) public deployedHackathonManagerContractMapping;
 
     event HackCreated(address _contractAddress);
 
@@ -26,4 +26,8 @@ contract HackathonManagerFactory {
         _address = address(newDeployed);
         emit HackCreated(_address);
     }
+
+    function getHackContractAddress(string memory _name) public view returns(address _hackContractAddress){
+        _hackContractAddress = address(deployedHackathonManagerContractMapping[_name]);
+    } 
 }
