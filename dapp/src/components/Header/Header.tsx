@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react"
 import { ethers, Signer } from "ethers"
 import { truncateEthAddress } from "utils/helpers"
 import Button from "components/shared/Button"
+import useWallet from "utils/hooks/useWallet"
 
-const Header: React.FC<Props> = () => {
-    const [account, setAccount] = useState<string>("")
+const Header: React.FC = () => {
+    const { wallet, setWalletAddress } = useWallet()
     const [userBalance, setUserBalance] = useState<string>("")
 
     useEffect(() => {
@@ -29,12 +30,12 @@ const Header: React.FC<Props> = () => {
     }
 
     const handleDisconnectWallet = () => {
-        setAccount("")
+        setWalletAddress(null)
     }
 
     const handleChangeAccount = async (newAccount: Signer) => {
         const address = await newAccount.getAddress()
-        setAccount(address)
+        setWalletAddress(address)
         const balance = await newAccount.getBalance()
         setUserBalance(ethers.utils.formatEther(balance))
         await getuserBalance(address)
@@ -48,10 +49,10 @@ const Header: React.FC<Props> = () => {
 
     return (
         <div className="container mx-auto py-2 flex justify-end items-center">
-            <Button onClick={account ? handleDisconnectWallet : handleConnectWallet}>
-                {account ? truncateEthAddress(account) : "Connect"}
+            <Button onClick={wallet.address ? handleDisconnectWallet : handleConnectWallet}>
+                {wallet.address ? truncateEthAddress(wallet.address) : "Connect"}
             </Button>
-            {account && userBalance ? (
+            {wallet.address && userBalance ? (
                 <span className="bg-blue-200 text-blue-800 -m-4 py-2 px-4 pl-6 font-bold rounded-r-xl inline-flex items-center">
                     {(+userBalance).toFixed(2)} ETH
                 </span>

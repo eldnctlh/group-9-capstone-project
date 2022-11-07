@@ -3,11 +3,13 @@ import { DateTime } from "luxon"
 import Button from "components/shared/Button"
 import Modal from "components/shared/Modal"
 import JoinHackaton from "components/forms/JoinHackaton"
+import useWallet from "utils/hooks/useWallet"
 
 const Dashboard = () => {
     const [deadline, setDeadline] = useState<string>("")
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
-
+    const { wallet } = useWallet()
+    console.log(wallet)
     useEffect(() => {
         setDeadline(DateTime.now().toString())
     }, [])
