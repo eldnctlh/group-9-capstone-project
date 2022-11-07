@@ -9,7 +9,7 @@ const Dashboard = () => {
     const [deadline, setDeadline] = useState<string>("")
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
     const { wallet } = useWallet()
-    console.log(wallet)
+
     useEffect(() => {
         setDeadline(DateTime.now().toString())
     }, [])

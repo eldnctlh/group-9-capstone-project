@@ -3,10 +3,12 @@ import { ethers, Signer } from "ethers"
 import { truncateEthAddress } from "utils/helpers"
 import Button from "components/shared/Button"
 import useWallet from "utils/hooks/useWallet"
+import useHackatonContract from "utils/hooks/useHackatonContract"
 
 const Header: React.FC = () => {
-    const { wallet, setWalletAddress } = useWallet()
+    const { wallet, setWalletSigner, disconnectWallet } = useWallet()
     const [userBalance, setUserBalance] = useState<string>("")
+    const { initContract } = useHackatonContract()
 
     useEffect(() => {
         if (window) {
@@ -19,6 +21,12 @@ const Header: React.FC = () => {
         }
     }, [])
 
+    useEffect(() => {
+        if (wallet.address) {
+            initContract()
+        }
+    }, [wallet.address])
+
     const handleConnectWallet = () => {
         if (window.ethereum) {
             const provider = new ethers.providers.Web3Provider(window.ethereum)
@@ -30,22 +38,22 @@ const Header: React.FC = () => {
     }
 
     const handleDisconnectWallet = () => {
-        setWalletAddress(null)
+        disconnectWallet()
     }
 
     const handleChangeAccount = async (newAccount: Signer) => {
-        const address = await newAccount.getAddress()
-        setWalletAddress(address)
+        // const address = await newAccount.getAddress()
+        setWalletSigner(newAccount)
         const balance = await newAccount.getBalance()
         setUserBalance(ethers.utils.formatEther(balance))
-        await getuserBalance(address)
+        // await getuserBalance(address)
     }
 
-    const getuserBalance = async (address: string) => {
-        const provider = new ethers.providers.Web3Provider(window.ethereum)
+    // const getuserBalance = async (address: string) => {
+    //     const provider = new ethers.providers.Web3Provider(window.ethereum)
 
-        const balance = await provider.getBalance(address, "latest")
-    }
+    //     const balance = await provider.getBalance(address, "latest")
+    // }
 
     return (
         <div className="container mx-auto py-2 flex justify-end items-center">
