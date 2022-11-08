@@ -1,5 +1,4 @@
 import type { NextPage } from "next"
-import Dashboard from "components/Dashboard"
 import Button from "components/shared/Button"
 import Link from "next/link"
 
@@ -11,7 +10,7 @@ const Home: NextPage = () => {
                     Create new hackaton
                 </Button>
             </Link>
-            <Dashboard />
+            Landing page here
         </>
     )
 }
