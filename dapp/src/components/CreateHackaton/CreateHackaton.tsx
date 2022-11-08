@@ -1,14 +1,12 @@
-import React, { useEffect } from "react"
+import React from "react"
+import { ethers } from "ethers"
 import HackatonMainData from "components/forms/HackatonMainData"
 import HackatonExtraData from "components/forms/HackatonExtraData"
-import useHackatonManagerFactory from "utils/hooks/useHackatonManagerFactory"
-import { ethers } from "ethers"
+import useHackatonManagerFactory from "utils/context/hackatonManagerFactoryContext"
 
 const CreateHackaton = () => {
-    const { initHackatonManager, deploymentFee } = useHackatonManagerFactory()
-    useEffect(() => {
-        initHackatonManager()
-    }, [])
+    const { deploymentFee } = useHackatonManagerFactory()
+
     return (
         <div className="container mx-auto py-10">
             <div className="grid grid-cols-5 gap-4">

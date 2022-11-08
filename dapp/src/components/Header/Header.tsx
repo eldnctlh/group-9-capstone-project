@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react"
 import { ethers, Signer } from "ethers"
 import { truncateEthAddress } from "utils/helpers"
 import Button from "components/shared/Button"
-import useWallet from "utils/hooks/useWallet"
-import useHackatonManagerFactory from "utils/hooks/useHackatonManagerFactory"
+import useWallet from "utils/context/walletContext"
 
 const Header: React.FC = () => {
     const { wallet, setWalletSigner, disconnectWallet } = useWallet()

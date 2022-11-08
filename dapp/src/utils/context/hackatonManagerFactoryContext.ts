@@ -1,12 +1,22 @@
-import { useEffect, useState } from "react"
-import { BigNumber, Contract, ethers } from "ethers"
+import { ethers, BigNumber, Contract } from "ethers"
+import { createContext, useContext, useEffect, useMemo, useState } from "react"
 import abi from "constants/abi/hackatonManagerFactoryAbi"
 import contractAddresses from "constants/contractAddresses"
-import useWallet from "./useWallet"
+import useWallet from "utils/context/walletContext"
 
-const useHackatonManagerFactory = () => {
+type HackatonManagerFactory = {
+    deploymentFee: undefined | BigNumber
+    loading: boolean
+    initHackatonManager: () => void
+    createNewHack: (name: string) => void
+    getHackContractAddress: (name: string) => Promise<string | undefined>
+}
+
+export const HackatonManagerFactoryContext = createContext<HackatonManagerFactory>({})
+
+export const useHackatonManagerFactoryContext = () => {
     const [signedContract, setSignedContract] = useState<Contract>()
-    const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [loading, setLoading] = useState<boolean>(false)
     const [deploymentFee, setDeploymentFee] = useState<BigNumber>()
     const { wallet } = useWallet()
 
@@ -22,7 +32,7 @@ const useHackatonManagerFactory = () => {
     }, [wallet])
 
     const initHackatonManager = async () => {
-        setIsLoading(true)
+        setLoading(true)
         const provider = new ethers.providers.Web3Provider(window.ethereum)
         const сontract_ = new ethers.Contract(
             contractAddresses.hackatonManagerFactoryContract,
@@ -30,9 +40,8 @@ const useHackatonManagerFactory = () => {
             provider
         )
         const [deploymentFee] = await Promise.all([сontract_.deploymentFee()])
-        console.log(deploymentFee)
         setDeploymentFee(deploymentFee)
-        setIsLoading(false)
+        setLoading(false)
     }
 
     const createNewHack = async (name: string) => {
@@ -47,7 +56,23 @@ const useHackatonManagerFactory = () => {
             return address
         }
     }
-    return { isLoading, deploymentFee, initHackatonManager, createNewHack, getHackContractAddress }
+
+    const hackatonManagerFactoryContext = useMemo(
+        () => ({
+            deploymentFee,
+            loading,
+            initHackatonManager,
+            createNewHack,
+            getHackContractAddress,
+        }),
+        [deploymentFee, loading, initHackatonManager, createNewHack, getHackContractAddress]
+    )
+
+    return hackatonManagerFactoryContext
+}
+
+const useHackatonManagerFactory = () => {
+    return useContext(HackatonManagerFactoryContext)
 }
 
 export default useHackatonManagerFactory
