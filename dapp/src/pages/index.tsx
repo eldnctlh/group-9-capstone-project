@@ -1,17 +1,17 @@
-import { useState } from "react"
 import type { NextPage } from "next"
 import Dashboard from "components/Dashboard"
-import CreateHackaton from "components/CreateHackaton"
 import Button from "components/shared/Button"
+import Link from "next/link"
 
 const Home: NextPage = () => {
-    const [isCreationStep, setIsCreationStep] = useState(false)
     return (
         <>
-            <Button className="mt-10" onClick={() => setIsCreationStep(!isCreationStep)}>
-                SWITCH TO HACKATON CREATION STEP, BUTTON WILL BE DELETED IN FUTURE
-            </Button>
-            {isCreationStep ? <CreateHackaton /> : <Dashboard />}
+            <Link href="/create-hackaton">
+                <Button className="mt-10" onClick={() => null}>
+                    Create new hackaton
+                </Button>
+            </Link>
+            <Dashboard />
         </>
     )
 }
