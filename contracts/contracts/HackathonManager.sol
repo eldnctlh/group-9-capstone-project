@@ -13,7 +13,7 @@ contract HackathonManager is Ownable {
     address public _contractFactory;
     address public _hackOwner;
     string public _hackathonName;
-    HackathonState _state;
+    HackathonState public _state;
 
 
     struct Participant {

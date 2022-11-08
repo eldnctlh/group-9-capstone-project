@@ -15,8 +15,10 @@ contract HackathonManagerFactory {
         Owner = msg.sender;
     }
 
-    function setFee() public view{
+    function setFee(uint256 fee) public returns(uint256 _fee){
         require(msg.sender == Owner, "Only owner can set a fee");
+        deploymentFee = fee;
+        _fee = deploymentFee;
     }
 
     function createNewHack(string memory _name) external payable returns(address _address){
