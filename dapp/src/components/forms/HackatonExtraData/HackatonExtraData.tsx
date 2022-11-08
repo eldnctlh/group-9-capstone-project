@@ -87,7 +87,7 @@ const HackatonExtraData: React.FC = () => {
                 <img className="w-full my-5" src={coverImageSrc} alt="coverImage" />
             ) : null}
 
-            <Button isLoading={isLoading} className="mt-5">
+            <Button loading={isLoading} className="mt-5">
                 Add data
             </Button>
         </form>

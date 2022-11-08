@@ -2,7 +2,7 @@ import { useEffect, useMemo } from "react"
 import type { AppProps } from "next/app"
 import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
-import useWallet, { useWalletContext, WalletContext } from "utils/context/walletContext"
+import { useWalletContext, WalletContext } from "utils/context/walletContext"
 import {
     useHackatonManagerFactoryContext,
     HackatonManagerFactoryContext,

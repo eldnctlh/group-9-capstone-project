@@ -1,14 +1,16 @@
-import { Signer } from "ethers"
+import { BigNumber, Signer } from "ethers"
 import { createContext, useContext, useEffect, useMemo, useState } from "react"
 
 type Wallet = {
     address: null | string
     signer: null | Signer
+    balance: null | BigNumber
 }
 
 const defaultWallet: Wallet = {
     address: null,
     signer: null,
+    balance: null,
 }
 
 export const WalletContext = createContext({})
@@ -22,7 +24,8 @@ export const useWalletContext = () => {
         if (wallet.signer) {
             ;(async () => {
                 const address = await wallet.signer.getAddress()
-                setWallet({ ...wallet, address })
+                const balance = await wallet.signer.getBalance()
+                setWallet({ ...wallet, address, balance })
             })()
         }
         setConnected(!!wallet.signer)
