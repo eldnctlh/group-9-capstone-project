@@ -1,8 +1,6 @@
 import { Signer } from "ethers"
 import { createContext, useContext, useEffect, useMemo, useState } from "react"
 
-export const WalletContext = createContext(null)
-
 type Wallet = {
     address: null | string
     signer: null | Signer
@@ -12,6 +10,8 @@ const defaultWallet: Wallet = {
     address: null,
     signer: null,
 }
+
+export const WalletContext = createContext({})
 
 export const useWalletContext = () => {
     const [wallet, setWallet] = useState(defaultWallet)

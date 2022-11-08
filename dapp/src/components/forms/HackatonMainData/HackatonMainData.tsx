@@ -2,6 +2,7 @@ import React from "react"
 import { useForm, useFieldArray } from "react-hook-form"
 import Input from "components/shared/Input"
 import Button from "components/shared/Button"
+import useHackatonManagerFactory from "utils/context/hackatonManagerFactoryContext"
 
 const HackatonMainData: React.FC = () => {
     const {

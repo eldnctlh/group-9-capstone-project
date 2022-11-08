@@ -63,12 +63,6 @@ const HackatonExtraData: React.FC = () => {
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             <Input
-                placeholder="Hackaton Name"
-                label="Hackaton Name"
-                error={errors.name && "Hackaton name is required."}
-                {...register("name", { required: true })}
-            />
-            <Input
                 placeholder="Hackaton Description"
                 label="Hackaton Description"
                 error={errors.description && "Hackaton description is required."}
