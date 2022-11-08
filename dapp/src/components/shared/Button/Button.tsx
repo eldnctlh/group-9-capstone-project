@@ -4,18 +4,20 @@ interface Props {
     children?: React.ReactNode
     onClick?: () => void
     className?: string
-    isLoading?: boolean
+    loading?: boolean
+    disabled?: boolean
 }
 
-const Button: React.FC<Props> = ({ children, isLoading, className, ...props }) => {
+const Button: React.FC<Props> = ({ children, loading, className, disabled, ...props }) => {
     return (
         <button
             {...props}
+            disabled={disabled}
             className={`bg-blue-300 hover:bg-blue-400 text-blue-800 font-bold py-2 px-4 rounded-xl inline-flex items-center z-10 relative ${
                 className || ""
-            }`}
+            } ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
         >
-            {isLoading ? (
+            {loading ? (
                 <svg
                     className="w-5 h-5 mr-3 -ml-1 text-white animate-spin"
                     xmlns="http://www.w3.org/2000/svg"

@@ -15,7 +15,7 @@ export const WalletContext = createContext({})
 
 export const useWalletContext = () => {
     const [wallet, setWallet] = useState(defaultWallet)
-
+    const [connected, setConnected] = useState(false)
     const disconnectWallet = () => setWallet(defaultWallet)
 
     useEffect(() => {
@@ -25,6 +25,7 @@ export const useWalletContext = () => {
                 setWallet({ ...wallet, address })
             })()
         }
+        setConnected(!!wallet.signer)
     }, [wallet.signer])
 
     const setWalletSigner = (signer: Signer) => setWallet({ ...wallet, signer })
@@ -32,11 +33,12 @@ export const useWalletContext = () => {
     const walletContext = useMemo(
         () => ({
             wallet,
+            connected,
             setWallet,
             setWalletSigner,
             disconnectWallet,
         }),
-        [wallet, setWallet, setWalletSigner, disconnectWallet]
+        [wallet, connected, setWallet, setWalletSigner, disconnectWallet]
     )
 
     return walletContext
