@@ -5,8 +5,6 @@ import Button from "components/shared/Button"
 import useHackatonManagerFactory from "utils/context/hackatonManagerFactoryContext"
 
 const HackatonMainData: React.FC = () => {
-    const { deploymentFee, createNewHack } = useHackatonManagerFactory()
-
     const {
         control,
         register,

@@ -45,8 +45,11 @@ export const useHackatonManagerFactoryContext = () => {
     }
 
     const createNewHack = async (name: string) => {
+        console.log(wallet)
+        console.log(signedContract)
         if (signedContract) {
-            await signedContract.createNewHack(name, { value: deploymentFee })
+            const res = await signedContract.createNewHack(name, { value: deploymentFee })
+            console.log(res)
         }
     }
 
