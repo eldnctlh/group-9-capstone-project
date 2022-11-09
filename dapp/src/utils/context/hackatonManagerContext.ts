@@ -7,12 +7,19 @@ export type Track = {
     trackPrize: string
 }
 
+export type Participant = {
+    teamName: string
+    projectName: string
+    projectLink: string
+}
+
 type HackatonManager = {
     loading: boolean
     initHackatonManager: (address: string) => void
     createSignedContract: (signer: Signer) => void
     resetSignedContract: () => void
     createTracks: (tracks: Track) => void
+    registerParticipant: (participant: Participant) => void
 }
 
 type HackatonState = {
@@ -57,7 +64,18 @@ export const useHackatonManagerContext = () => {
             setLoading(true)
             await signedContract.createTrack(track.trackName, track.trackPrize)
             setLoading(false)
-            return
+        }
+    }
+
+    const registerParticipant = async (participant: Participant) => {
+        if (signedContract) {
+            setLoading(true)
+            await signedContract.registerParticipant(
+                participant.teamName,
+                participant.projectName,
+                participant.projectLink
+            )
+            setLoading(false)
         }
     }
 
@@ -68,6 +86,7 @@ export const useHackatonManagerContext = () => {
             createTracks,
             createSignedContract,
             resetSignedContract,
+            registerParticipant,
             hackatonState,
         }),
         [
@@ -77,6 +96,7 @@ export const useHackatonManagerContext = () => {
             createTracks,
             createSignedContract,
             resetSignedContract,
+            registerParticipant,
         ]
     )
 
