@@ -59,14 +59,16 @@ const Header: React.FC = () => {
             <Link href="/create-hackaton">
                 <Button onClick={() => null}>Create new hackaton</Button>
             </Link>
-            <Button onClick={wallet.address ? handleDisconnectWallet : handleConnectWallet}>
-                {wallet.address ? truncateEthAddress(wallet.address) : "Connect"}
-            </Button>
-            {wallet.address && wallet.balance ? (
-                <span className="bg-blue-200 text-blue-800 -m-4 py-2 px-4 pl-6 font-bold rounded-r-xl inline-flex items-center">
-                    {(+ethers.utils.formatEther(wallet.balance)).toFixed(2)} ETH
-                </span>
-            ) : null}
+            <div>
+                <Button onClick={wallet.address ? handleDisconnectWallet : handleConnectWallet}>
+                    {wallet.address ? truncateEthAddress(wallet.address) : "Connect"}
+                </Button>
+                {wallet.address && wallet.balance ? (
+                    <span className="bg-blue-200 text-blue-800 -m-4 py-2 px-4 pl-6 font-bold rounded-r-xl inline-flex items-center">
+                        {(+ethers.utils.formatEther(wallet.balance)).toFixed(2)} ETH
+                    </span>
+                ) : null}
+            </div>
         </div>
     )
 }
