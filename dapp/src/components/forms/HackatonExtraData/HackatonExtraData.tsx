@@ -43,7 +43,6 @@ const HackatonExtraData: React.FC = () => {
 
     const onSubmit = async (data: any) => {
         setLoading(true)
-        console.log(query)
         const fileName = `${query.address}.json`
         // const formData = new FormData()
         // formData.append("profileImage", data.profileImage[0])

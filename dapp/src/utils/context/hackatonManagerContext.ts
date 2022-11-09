@@ -74,17 +74,22 @@ export const useHackatonManagerContext = () => {
 
     const createTracks = async (track: Track) => {
         if (signedContract) {
-            await signedContract.createTrack(track.trackName, track.trackPrize)
+            const rc = await signedContract.createTrack(
+                track.trackName,
+                ethers.utils.parseEther(track.trackPrize)
+            )
+            await rc.wait()
         }
     }
 
     const registerParticipant = async (participant: Participant) => {
         if (signedContract) {
-            await signedContract.registerParticipant(
+            const rc = await signedContract.registerParticipant(
                 participant.teamName,
                 participant.projectName,
                 participant.projectLink
             )
+            await rc.wait()
         }
     }
 
@@ -93,18 +98,18 @@ export const useHackatonManagerContext = () => {
             const rc = await signedContract.fundHackathon({
                 value: ethers.utils.parseEther(amount),
             })
+            await rc.wait()
             setHackatonState({
                 ...hackatonState,
                 funded: true,
             })
-            const res = await rc.wait()
-            console.log(res)
         }
     }
 
     const addCID = async (CID: string) => {
         if (signedContract) {
-            await signedContract.addCID(CID)
+            const rc = await signedContract.addCID(CID)
+            await rc.wait()
         }
     }
 

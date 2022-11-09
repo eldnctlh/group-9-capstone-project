@@ -30,7 +30,7 @@ const Button: React.FC<Props> = ({ children, loading, className, disabled, ...pr
                         cy="12"
                         r="10"
                         stroke="currentColor"
-                        stroke-width="4"
+                        strokeWidth="4"
                     ></circle>
                     <path
                         className="opacity-75"
