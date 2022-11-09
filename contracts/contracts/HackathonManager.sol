@@ -192,6 +192,7 @@ contract HackathonManager is Ownable {
 
     function addPrizeToTrack(string memory _trackName, string memory _prizeName, uint256 _amount) external trackPrizeTotalCannotExceedTrackPoolAmount(_trackName, _amount) onlyCommitteeMembers(msg.sender) prizeNameShouldBeUnique(_prizeName){
         require(trackExists(_trackName), "The track mentioned does not exist");
+        require(_amount > 0, "Prize amount cannot be zero!");
         Participant memory initParticipant = Participant("", "", "", false, false, false, address(0));
         _hackathonTracks[_trackName]._prizes[_prizeName] = (Prize(_prizeName, initParticipant, _amount, false));
         _prizeNameTaken[_prizeName] = true;
