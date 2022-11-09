@@ -7,25 +7,141 @@ import { HackathonManager } from "../typechain-types";
 describe("HackathonManager", function () {
 
     let hackatonManager : HackathonManager;
-
+    let hackatonOwner : any;
+    const trackName = "Super Winner";
+    
     beforeEach(async function() {
-
-        const [hackatonOwner] = await ethers.getSigners();
+        
+        [hackatonOwner] = await ethers.getSigners();
         const hackatonName = "name";
         const HackathonManager = await ethers.getContractFactory("HackathonManager");
-
+        
         hackatonManager = await HackathonManager.deploy(hackatonOwner.address, hackatonName);
-
-        await hackatonManager.fundHackathon({value: 2});
-              
+        
+        await hackatonManager.fundHackathon({value: 200});
+        
     });
-
+    
     it("CreateTrack emits TrackCreated", async function() {
- 
-        const trackName = "Super Winner";
-
+        
+        
         await expect(hackatonManager.createTrack(trackName, 1))
-            .to.emit(hackatonManager,"TrackCreated");
+        .to.emit(hackatonManager,"TrackCreated");
     });
+    
+    it ("Prizes can be added to a 'Track' after funded", async function() {
+
+        const prizeName = "1 million dollar bounty";
+        const tx = await hackatonManager.createTrack(trackName, 100);
+        await tx.wait();
+
+        await expect( hackatonManager.addPrizeToTrack(trackName, prizeName, 1))
+            .to.emit(hackatonManager, "PrizeAddedToTrack")
+            .withArgs(trackName, prizeName,1);
+
+        
+    });
+
+
+    it ("Participants cannot register when hackaton not open ", async function () {
+
+        const teamname = "Team 9";
+        const projectname = "Wen bounty?";
+        const projectlink = "https://localhost:3000";
+
+        await expect(hackatonManager.registerParticipant(teamname, projectname, projectlink))
+        .to.revertedWith('The hackathon is not open!');
+
+    });
+
+    it ("Participants can register when hackaton OPEN ", async function () {
+
+        const teamname = "Team 9";
+        const projectname = "Wen bounty?";
+        const projectlink = "https://localhost:3000";
+
+        const stateBefore =await  hackatonManager._state();
+        expect(stateBefore).to.equal(0);
+
+        const tx = await hackatonManager.setHackathonState(hackatonOwner.address, 1);
+        await tx.wait();
+
+        await expect(hackatonManager.registerParticipant(teamname, projectname, projectlink))
+            .to.emit(hackatonManager, "ParticipantRegistered");
+
+        const stateAfter =await  hackatonManager._state();
+        expect(stateAfter).to.equal(1);
+    
+    });
+
+
+    it ("Should get state of hackaton", async function() {
+
+        const state =await  hackatonManager._state();
+        console.log("State: " + state);
+    });
+
+
+    it ("Registered participants can submit project", async function() {
+        const teamname = "Team 9";
+        const projectname = "Wen bounty?";
+        const projectlink = "https://localhost:3000";
+
+        const tx = await hackatonManager.setHackathonState(hackatonOwner.address, 1);
+        await tx.wait();
+
+        await expect(hackatonManager.registerParticipant(teamname, projectname, projectlink))
+            .to.emit(hackatonManager, "ParticipantRegistered");
+
+        await expect( hackatonManager.submitProject(teamname))
+            .to.emit(hackatonManager, "ProjectSubmitted")
+            .withArgs(teamname, projectlink);
+
+    });
+
+    it ("Submitted project can be validated (Approved)", async () => {
+
+        const teamname = "Team 9";
+        const projectname = "Wen bounty?";
+        const projectlink = "https://localhost:3000";
+
+        const tx = await hackatonManager.setHackathonState(hackatonOwner.address, 1);
+        await tx.wait();
+
+        await expect(hackatonManager.registerParticipant(teamname, projectname, projectlink))
+            .to.emit(hackatonManager, "ParticipantRegistered");
+
+        await expect( hackatonManager.submitProject(teamname))
+            .to.emit(hackatonManager, "ProjectSubmitted")
+            .withArgs(teamname, projectlink);
+
+        await expect (hackatonManager.validateTeamProject(teamname, true))
+            .to.emit(hackatonManager, "ProjectApproved")
+            .withArgs(teamname,projectname, hackatonOwner.address);
+
+    })
+
+    it ("Submitted project can be validated (Rejected)", async () => {
+
+        const teamname = "Team 9";
+        const projectname = "Wen bounty?";
+        const projectlink = "https://localhost:3000";
+
+        const tx = await hackatonManager.setHackathonState(hackatonOwner.address, 1);
+        await tx.wait();
+
+        await expect(hackatonManager.registerParticipant(teamname, projectname, projectlink))
+            .to.emit(hackatonManager, "ParticipantRegistered");
+
+        await expect( hackatonManager.submitProject(teamname))
+            .to.emit(hackatonManager, "ProjectSubmitted")
+            .withArgs(teamname, projectlink);
+
+        await expect (hackatonManager.validateTeamProject(teamname, false))
+            .to.emit(hackatonManager, "ProjectRejected")
+            .withArgs(teamname,projectname, hackatonOwner.address);
+
+    })
+
 
 });
