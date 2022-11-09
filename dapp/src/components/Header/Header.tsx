@@ -5,6 +5,7 @@ import Button from "components/shared/Button"
 import useWallet from "utils/context/walletContext"
 import useHackatonManagerFactory from "utils/context/hackatonManagerFactoryContext"
 import useHackatonManager from "utils/context/hackatonManagerContext"
+import Link from "next/link"
 
 const Header: React.FC = () => {
     const { wallet, setWalletSigner, disconnectWallet } = useWallet()
@@ -54,7 +55,10 @@ const Header: React.FC = () => {
     }
 
     return (
-        <div className="container mx-auto py-2 flex justify-end items-center">
+        <div className="container mx-auto py-2 flex justify-between items-center">
+            <Link href="/create-hackaton">
+                <Button onClick={() => null}>Create new hackaton</Button>
+            </Link>
             <Button onClick={wallet.address ? handleDisconnectWallet : handleConnectWallet}>
                 {wallet.address ? truncateEthAddress(wallet.address) : "Connect"}
             </Button>
