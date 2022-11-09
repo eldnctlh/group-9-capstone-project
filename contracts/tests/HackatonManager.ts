@@ -8,26 +8,40 @@ describe("HackathonManager", function () {
 
     let hackatonManager : HackathonManager;
     let hackatonOwner : any;
-
+    const trackName = "Super Winner";
+    
     beforeEach(async function() {
-
+        
         [hackatonOwner] = await ethers.getSigners();
         const hackatonName = "name";
         const HackathonManager = await ethers.getContractFactory("HackathonManager");
-
+        
         hackatonManager = await HackathonManager.deploy(hackatonOwner.address, hackatonName);
-
-        await hackatonManager.fundHackathon({value: 2});
-              
+        
+        await hackatonManager.fundHackathon({value: 200});
+        
     });
-
+    
     it("CreateTrack emits TrackCreated", async function() {
- 
-        const trackName = "Super Winner";
-
+        
+        
         await expect(hackatonManager.createTrack(trackName, 1))
-            .to.emit(hackatonManager,"TrackCreated");
+        .to.emit(hackatonManager,"TrackCreated");
     });
+    
+    it ("Prizes can be added to a 'Track' after funded", async function() {
+
+        const prizeName = "1 million dollar bounty";
+        const tx = await hackatonManager.createTrack(trackName, 100);
+        await tx.wait();
+
+        await expect( hackatonManager.addPrizeToTrack(trackName, prizeName, 1))
+            .to.emit(hackatonManager, "PrizeAddedToTrack")
+            .withArgs(trackName, prizeName,1);
+
+        
+    });
+
 
     it ("Participants cannot register when hackaton not open ", async function () {
 
@@ -61,7 +75,7 @@ describe("HackathonManager", function () {
     });
 
 
-    it ("Should get state of hackaton", async function() {
+    it ("Should be able to get state of hackaton", async function() {
 
         const state =await  hackatonManager._state();
         console.log("State: " + state);
@@ -128,5 +142,45 @@ describe("HackathonManager", function () {
             .withArgs(teamname,projectname, hackatonOwner.address);
 
     })
+
+    it("Capture winner emits ['prize paid']", async () => {
+
+
+        // create track with a 1 million dollar bounty!
+        const prizeName = "1 million dollar bounty";
+        const tx = await hackatonManager.createTrack(trackName, 100);
+        await tx.wait();
+
+        // add prize to track
+        await (await hackatonManager.addPrizeToTrack(trackName, prizeName, 1)).wait();
+            
+
+        // set hackaton state to open
+        await (await hackatonManager.setHackathonState(hackatonOwner.address, 1)).wait();
+        
+        // participant registers
+        const teamname = "Team 9";
+        const projectname = "Wen bounty?";
+        const projectlink = "https://localhost:3000";
+
+        await (await hackatonManager.registerParticipant(teamname, projectname, projectlink)).wait();
+            
+
+
+        // participant submits project
+        await (await hackatonManager.submitProject(teamname)).wait();
+
+
+        // commitee validates team project
+        await (await (hackatonManager.validateTeamProject(teamname, true))).wait();
+        
+
+        // set hackaton state to closed
+        await (await hackatonManager.setHackathonState(hackatonOwner.address, 2)).wait();
+
+        // capture winner
+        await expect(hackatonManager.captureWinner(trackName,prizeName, teamname))
+            .to.emit(hackatonManager,"PrizePaid" );
+    });
 
 });
