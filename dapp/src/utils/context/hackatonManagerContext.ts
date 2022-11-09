@@ -20,27 +20,35 @@ type HackatonManager = {
     resetSignedContract: () => void
     createTracks: (tracks: Track) => void
     registerParticipant: (participant: Participant) => void
+    addCID: (CID: string) => void
+    fundHackaton: (amount: string) => void
 }
 
 type HackatonState = {
     name: string
+    CID: string
+    funds: null | BigNumber
+    funded: boolean
 }
 
 const defaultHackatonState: HackatonState = {
     name: "",
+    CID: "",
+    funds: null,
+    funded: false,
 }
 
 export const HackatonManagerContext = createContext<HackatonManager>({})
 
 export const useHackatonManagerContext = () => {
     const [signedContract, setSignedContract] = useState<Contract>()
-    const [loading, setLoading] = useState<boolean>(false)
+    const [loading, setLoading] = useState<boolean>(true)
     const [contractAddress, setContractAddress] = useState<string>("")
     const [hackatonState, setHackatonState] = useState<HackatonState>(defaultHackatonState)
 
     const createSignedContract = (signer: Signer) => {
-        const сontract_ = new ethers.Contract(contractAddress, abi.abi, signer)
-        setSignedContract(сontract_)
+        const contract_ = new ethers.Contract(contractAddress, abi.abi, signer)
+        setSignedContract(contract_)
     }
 
     const resetSignedContract = () => {
@@ -51,9 +59,14 @@ export const useHackatonManagerContext = () => {
         setLoading(true)
         const provider = new ethers.providers.Web3Provider(window.ethereum)
         const contract_ = new ethers.Contract(contractAddress, abi.abi, provider)
+        const funds = await contract_._hackathonFundBalance()
+        const funded = funds.gt(0)
         const [name] = await Promise.all([contract_._hackathonName()])
         setHackatonState({
             name,
+            CID: "",
+            funds,
+            funded,
         })
         setContractAddress(contractAddress)
         setLoading(false)
@@ -61,21 +74,37 @@ export const useHackatonManagerContext = () => {
 
     const createTracks = async (track: Track) => {
         if (signedContract) {
-            setLoading(true)
             await signedContract.createTrack(track.trackName, track.trackPrize)
-            setLoading(false)
         }
     }
 
     const registerParticipant = async (participant: Participant) => {
         if (signedContract) {
-            setLoading(true)
             await signedContract.registerParticipant(
                 participant.teamName,
                 participant.projectName,
                 participant.projectLink
             )
-            setLoading(false)
+        }
+    }
+
+    const fundHackaton = async (amount: string) => {
+        if (signedContract) {
+            const rc = await signedContract.fundHackathon({
+                value: ethers.utils.parseEther(amount),
+            })
+            setHackatonState({
+                ...hackatonState,
+                funded: true,
+            })
+            const res = await rc.wait()
+            console.log(res)
+        }
+    }
+
+    const addCID = async (CID: string) => {
+        if (signedContract) {
+            await signedContract.addCID(CID)
         }
     }
 
@@ -87,6 +116,8 @@ export const useHackatonManagerContext = () => {
             createSignedContract,
             resetSignedContract,
             registerParticipant,
+            addCID,
+            fundHackaton,
             hackatonState,
         }),
         [
@@ -97,6 +128,8 @@ export const useHackatonManagerContext = () => {
             createSignedContract,
             resetSignedContract,
             registerParticipant,
+            addCID,
+            fundHackaton,
         ]
     )
 

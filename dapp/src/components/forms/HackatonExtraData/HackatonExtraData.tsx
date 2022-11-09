@@ -10,8 +10,8 @@ import { useRouter } from "next/router"
 const HackatonExtraData: React.FC = () => {
     // const [coverImageSrc, setCoverImageSrc] = useState<string>("")
     // const [profileImageSrc, setProfileImageSrc] = useState<string>("")
-    const [isLoading, setIsLoading] = useState<boolean>(false)
-    const { createTracks } = useHackatonManager()
+    const [loading, setLoading] = useState<boolean>(false)
+    const { addCID } = useHackatonManager()
     const { makeFileObjects, storeFiles } = useWeb3Storage()
     const { query } = useRouter()
 
@@ -42,7 +42,7 @@ const HackatonExtraData: React.FC = () => {
     // }, [watchCoverImage])
 
     const onSubmit = async (data: any) => {
-        setIsLoading(true)
+        setLoading(true)
         console.log(query)
         const fileName = `${query.address}.json`
         // const formData = new FormData()
@@ -57,13 +57,14 @@ const HackatonExtraData: React.FC = () => {
             const responseUrl = `https://${ipfsRes}.ipfs.w3s.link/${fileName}`
             toast(`Successfuly uploaded to ${responseUrl}`)
             toast(`CID ${ipfsRes}`)
+            await addCID(ipfsRes)
             console.log("upload done", responseUrl)
         } catch (err) {
             console.log(err)
             toast.error(err.message)
         }
 
-        setIsLoading(false)
+        setLoading(false)
     }
 
     return (
@@ -93,7 +94,7 @@ const HackatonExtraData: React.FC = () => {
                 <img className="w-full my-5" src={coverImageSrc} alt="coverImage" />
             ) : null} */}
 
-            <Button loading={isLoading} className="mt-5">
+            <Button loading={loading} className="mt-5">
                 Add data
             </Button>
         </form>

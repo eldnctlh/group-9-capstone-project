@@ -1,3 +1,3 @@
 export default {
-    hackatonManagerFactoryContract: "0xdada29151a85b4926f7a78cbf768fc1f498b552e",
+    hackatonManagerFactoryContract: "0x88AA34e3B9bF8397e75607d5141763C87F997319",
 }
