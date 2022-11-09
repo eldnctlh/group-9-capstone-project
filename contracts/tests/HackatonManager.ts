@@ -85,4 +85,48 @@ describe("HackathonManager", function () {
 
     });
 
+    it ("Submitted project can be validated (Approved)", async () => {
+
+        const teamname = "Team 9";
+        const projectname = "Wen bounty?";
+        const projectlink = "https://localhost:3000";
+
+        const tx = await hackatonManager.setHackathonState(hackatonOwner.address, 1);
+        await tx.wait();
+
+        await expect(hackatonManager.registerParticipant(teamname, projectname, projectlink))
+            .to.emit(hackatonManager, "ParticipantRegistered");
+
+        await expect( hackatonManager.submitProject(teamname))
+            .to.emit(hackatonManager, "ProjectSubmitted")
+            .withArgs(teamname, projectlink);
+
+        await expect (hackatonManager.validateTeamProject(teamname, true))
+            .to.emit(hackatonManager, "ProjectApproved")
+            .withArgs(teamname,projectname, hackatonOwner.address);
+
+    })
+
+    it ("Submitted project can be validated (Rejected)", async () => {
+
+        const teamname = "Team 9";
+        const projectname = "Wen bounty?";
+        const projectlink = "https://localhost:3000";
+
+        const tx = await hackatonManager.setHackathonState(hackatonOwner.address, 1);
+        await tx.wait();
+
+        await expect(hackatonManager.registerParticipant(teamname, projectname, projectlink))
+            .to.emit(hackatonManager, "ParticipantRegistered");
+
+        await expect( hackatonManager.submitProject(teamname))
+            .to.emit(hackatonManager, "ProjectSubmitted")
+            .withArgs(teamname, projectlink);
+
+        await expect (hackatonManager.validateTeamProject(teamname, false))
+            .to.emit(hackatonManager, "ProjectRejected")
+            .withArgs(teamname,projectname, hackatonOwner.address);
+
+    })
+
 });
