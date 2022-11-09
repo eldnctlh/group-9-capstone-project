@@ -117,7 +117,7 @@ contract HackathonManager is Ownable {
         emit HackathonCreated(_name, _hackathonOwner);
     }
 
-    function addCID(string cid) external onlyCommitteeMembers(msg.sender){
+    function addCID(string memory cid) external onlyCommitteeMembers(msg.sender){
         _cid = cid;
         emit HackathonCIDAdded(msg.sender, _cid);
     }
@@ -137,11 +137,11 @@ contract HackathonManager is Ownable {
         _state = HackathonState(_newState);
     }
 
-    function getHackathonState() external returns(string){
-        if(_state == HackathonState.UPCOMING) return "upcoming";
-        if(_state == HackathonState.OPEN) return "open";
-        if(_state == HackathonState.CONCLUDED) return "concluded";
-        if(_state == HackathonState.CLOSED) return "closed";
+    function getHackathonState() external view returns(string memory state){
+        if(_state == HackathonState.UPCOMING) state = "upcoming";
+        if(_state == HackathonState.OPEN) state = "open";
+        if(_state == HackathonState.CONCLUDED) state = "concluded";
+        if(_state == HackathonState.CLOSED) state = "closed";
     }
 
     function fundHackathon() external payable returns(uint256 _balance){
@@ -172,7 +172,7 @@ contract HackathonManager is Ownable {
     }
 
     function trackExists(string memory _trackName) internal view returns(bool){
-        if (bytes(_hackathonTracks[_trackName]).length != 0){
+        if (bytes(_hackathonTracks[_trackName]._trackName).length != 0){
             return true;
         }
         return false;
@@ -208,6 +208,6 @@ contract HackathonManager is Ownable {
         emit PrizeWinnerCaptured(_track, _prize, _team);
         _hackathonTracks[_track]._prizes[_prize]._paid = true;
         payable(winner._participantAddress).transfer(_hackathonTracks[_track]._prizes[_prize]._amount);
-        emit PrizePaid(_team, receiver, _hackathonTracks[_track]._prizes[_prize]._amount);
+        emit PrizePaid(_team, winner._participantAddress, _hackathonTracks[_track]._prizes[_prize]._amount);
     }
 }
