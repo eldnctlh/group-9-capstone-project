@@ -8,26 +8,40 @@ describe("HackathonManager", function () {
 
     let hackatonManager : HackathonManager;
     let hackatonOwner : any;
-
+    const trackName = "Super Winner";
+    
     beforeEach(async function() {
-
+        
         [hackatonOwner] = await ethers.getSigners();
         const hackatonName = "name";
         const HackathonManager = await ethers.getContractFactory("HackathonManager");
-
+        
         hackatonManager = await HackathonManager.deploy(hackatonOwner.address, hackatonName);
-
-        await hackatonManager.fundHackathon({value: 2});
-              
+        
+        await hackatonManager.fundHackathon({value: 200});
+        
     });
-
+    
     it("CreateTrack emits TrackCreated", async function() {
- 
-        const trackName = "Super Winner";
-
+        
+        
         await expect(hackatonManager.createTrack(trackName, 1))
-            .to.emit(hackatonManager,"TrackCreated");
+        .to.emit(hackatonManager,"TrackCreated");
     });
+    
+    it ("Prizes can be added to a 'Track' after funded", async function() {
+
+        const prizeName = "1 million dollar bounty";
+        const tx = await hackatonManager.createTrack(trackName, 100);
+        await tx.wait();
+
+        await expect( hackatonManager.addPrizeToTrack(trackName, prizeName, 1))
+            .to.emit(hackatonManager, "PrizeAddedToTrack")
+            .withArgs(trackName, prizeName,1);
+
+        
+    });
+
 
     it ("Participants cannot register when hackaton not open ", async function () {
 
@@ -128,5 +142,6 @@ describe("HackathonManager", function () {
             .withArgs(teamname,projectname, hackatonOwner.address);
 
     })
+
 
 });
