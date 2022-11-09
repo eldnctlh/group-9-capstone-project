@@ -8,8 +8,14 @@ contract HackathonManagerFactory {
     address public Owner;
     uint256 public deploymentFee;
     mapping (string => HackathonManager) public deployedHackathonManagerContractMapping;
+    string[] public hackathonNames;
 
     event HackCreated(address _contractAddress);
+
+    modifier HackNameShouldBeUnique(string memory name){
+        require(address(deployedHackathonManagerContractMapping[name]) == address(0), "Hackathon name exists!");
+        _;
+    }
 
     constructor(){
         Owner = msg.sender;
@@ -21,10 +27,11 @@ contract HackathonManagerFactory {
         _fee = deploymentFee;
     }
 
-    function createNewHack(string memory _name) external payable returns(address _address){
+    function createNewHack(string memory _name) external payable HackNameShouldBeUnique(_name) returns(address _address){
         require(msg.value >= deploymentFee);
         HackathonManager newDeployed = new HackathonManager(msg.sender, _name);
         deployedHackathonManagerContractMapping[_name] = newDeployed;
+        hackathonNames.push(_name);
         _address = address(newDeployed);
         emit HackCreated(_address);
     }

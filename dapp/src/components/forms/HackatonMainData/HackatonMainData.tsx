@@ -1,10 +1,17 @@
-import React from "react"
+import React, { useState } from "react"
 import { useForm, useFieldArray } from "react-hook-form"
+import { toast } from "react-toastify"
 import Input from "components/shared/Input"
 import Button from "components/shared/Button"
-import useHackatonManagerFactory from "utils/context/hackatonManagerFactoryContext"
+import useWallet from "utils/context/walletContext"
+import useHackatonManager, { Track } from "utils/context/hackatonManagerContext"
 
 const HackatonMainData: React.FC = () => {
+    const [loading, setLoading] = useState<boolean>(false)
+    const { createTracks } = useHackatonManager()
+
+    const { connected } = useWallet()
+
     const {
         control,
         register,
@@ -15,13 +22,23 @@ const HackatonMainData: React.FC = () => {
             tracks: [{ trackName: "", trackPrize: "" }],
         },
     })
-    const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
+    const { fields, append, remove } = useFieldArray({
         control,
         name: "tracks",
     })
 
-    const onSubmit = (data: any) => {
-        console.log(data)
+    const onSubmit = async ({ tracks }: { tracks: Track[] }) => {
+        setLoading(true)
+        for (const track of tracks) {
+            try {
+                await createTracks(track)
+                toast(`Track ${track.trackName} added`)
+            } catch (err) {
+                console.log(err)
+                toast.error(err.message)
+            }
+        }
+        setLoading(false)
     }
 
     return (
@@ -42,7 +59,7 @@ const HackatonMainData: React.FC = () => {
                         />
                         <Input
                             placeholder={`Track ${index + 1} Prize`}
-                            label={`Track ${index + 1} Prize`}
+                            label={`Track ${index + 1} Prize (ETH)`}
                             error={
                                 errors.tracks &&
                                 errors.tracks[index] &&
@@ -70,8 +87,13 @@ const HackatonMainData: React.FC = () => {
                 >
                     + Add track
                 </Button>
-                <Button className="mt-5" onClick={() => handleSubmit(onSubmit)}>
-                    Create Hackaton
+                <Button
+                    loading={loading}
+                    disabled={!connected || loading}
+                    className="mt-5"
+                    onClick={() => handleSubmit(onSubmit)}
+                >
+                    Submit tracks
                 </Button>
             </div>
         </form>

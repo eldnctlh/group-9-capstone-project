@@ -1,16 +1,26 @@
 import React, { useEffect, useState } from "react"
 import { DateTime } from "luxon"
+import { useRouter } from "next/router"
 import Button from "components/shared/Button"
 import Modal from "components/shared/Modal"
 import JoinHackaton from "components/forms/JoinHackaton"
+import useHackatonManager from "utils/context/hackatonManagerContext"
 
 const Dashboard = () => {
     const [deadline, setDeadline] = useState<string>("")
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
+    const { initHackatonManager, hackatonState } = useHackatonManager()
+    const { query } = useRouter()
 
     useEffect(() => {
         setDeadline(DateTime.now().toString())
     }, [])
+
+    useEffect(() => {
+        if (query.address) {
+            initHackatonManager(query.address)
+        }
+    }, [query.address])
 
     const renderPrize = () => (
         <div>
@@ -28,7 +38,7 @@ const Dashboard = () => {
                     <div className="grid grid-cols-5 gap-4">
                         <div className="col-span-3">
                             <h2 className="text-4xl font-bold text-gray-100">
-                                NEAR MetaBUILD III Hackathon
+                                {hackatonState.name}
                             </h2>
                             <p className="my-4 text-lg text-gray-400">
                                 Our world has changed. Meet new challenges in a way a true buidler

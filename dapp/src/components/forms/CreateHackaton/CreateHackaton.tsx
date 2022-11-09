@@ -6,10 +6,14 @@ import Button from "components/shared/Button"
 import useHackatonManagerFactory from "utils/context/hackatonManagerFactoryContext"
 import useWallet from "utils/context/walletContext"
 
-const CreateHackaton: React.FC = () => {
-    const [isLoading, setIsLoading] = useState<boolean>(false)
+interface Props {
+    setCreatedHackatonAddress: (address: string) => void
+}
+
+const CreateHackaton: React.FC<Props> = ({ setCreatedHackatonAddress }) => {
+    const [loading, setLoading] = useState<boolean>(false)
     const { createNewHack } = useHackatonManagerFactory()
-    const { wallet } = useWallet()
+    const { connected } = useWallet()
 
     const {
         register,
@@ -18,10 +22,16 @@ const CreateHackaton: React.FC = () => {
     } = useForm()
 
     const onSubmit = async (data: any) => {
-        setIsLoading(true)
-        console.log(wallet)
-        createNewHack(data.name)
-        setIsLoading(false)
+        setLoading(true)
+        try {
+            const address = await createNewHack(data.name)
+            toast(`Hackaton created at ${address}`)
+            setCreatedHackatonAddress(address)
+        } catch (err) {
+            console.log(err)
+            toast.error(err.message)
+        }
+        setLoading(false)
     }
 
     return (
@@ -32,7 +42,7 @@ const CreateHackaton: React.FC = () => {
                 error={errors.name && "Hackaton name is required."}
                 {...register("name", { required: true })}
             />
-            <Button isLoading={isLoading} className="mt-5">
+            <Button loading={loading} disabled={!connected || loading} className="mt-5">
                 Create Hackaton
             </Button>
         </form>
