@@ -16,10 +16,7 @@ const useWeb3Storage = () => {
         const blob = new Blob([JSON.stringify(dataObject)], {
             type: "application/json",
         })
-        const files = [
-            new File(["contents-of-file-1"], "plain-utf8.txt"),
-            new File([blob], fileName),
-        ]
+        const files = [new File([blob], fileName)]
         return files
     }
 
