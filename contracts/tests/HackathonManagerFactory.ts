@@ -43,7 +43,7 @@ describe("HackathonManagerFactory", function () {
             const hackName = "revert hack";
 
             // TODO: add value to setFee
-            await hackathonManagerFactory.setFee();
+            await hackathonManagerFactory.setFee(11);
             
             await expect(hackathonManagerFactory.createNewHack(hackName, {value: 10}))
                 .to.revertedWithoutReason();
@@ -58,7 +58,6 @@ describe("HackatonManager", function () {
     const hackName = "hackatonmanager";
 
     beforeEach(async function () {
-        
             
             const HackathonManagerFactory = await ethers.getContractFactory("HackathonManagerFactory");
             const hackathonManagerFactory = await HackathonManagerFactory.deploy();
@@ -75,11 +74,9 @@ describe("HackatonManager", function () {
         const hackatonmanager =(await ethers.getContractFactory("HackathonManager"))
         .attach(hackatonManagerAddress);
         
-        
-        console.log('THe name was: ' + await hackatonmanager._hackathonName());
+        console.log('The name was: ' + await hackatonmanager._hackathonName());
         await expect(await hackatonmanager._hackathonName())
             .to.equal(hackName);
 
-        
       });
 });
