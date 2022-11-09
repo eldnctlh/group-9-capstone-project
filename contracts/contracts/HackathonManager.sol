@@ -13,6 +13,8 @@ contract HackathonManager is Ownable {
     address public _contractFactory;
     address public _hackOwner;
     string public _hackathonName;
+    string public _cid;
+    string[] public _tracks;
     HackathonState public _state;
 
 
@@ -47,6 +49,7 @@ contract HackathonManager is Ownable {
     
     event HackathonCreated(string _hack, address _creator);
     event HackathonFunded(uint _amountFunded, uint _currentHackatonFundBalance);
+    event HackathonCIDAdded(address _addedBy, string CID);
     event TrackCreated(string _trackName, uint _totalPrizePool);
     event PrizeWinnerCaptured(string _track, string _prize, string _team);
     event PrizePaid(string _team, address _toAddress, uint256 _amount);
@@ -114,6 +117,11 @@ contract HackathonManager is Ownable {
         emit HackathonCreated(_name, _hackathonOwner);
     }
 
+    function addCID(string cid) external onlyCommitteeMembers(msg.sender){
+        _cid = cid;
+        emit HackathonCIDAdded(msg.sender, _cid);
+    }
+
     function addCommitteeMember(address _newMember) public onlyOwner {
         _hackathonCommitteeMembers[_newMember] = true;
         emit CommitteeMemberAdded(_newMember);
@@ -124,9 +132,16 @@ contract HackathonManager is Ownable {
         emit CommitteeMemberRemoved(_oldMember);
     }
 
-    function setHackathonState(address _caller, uint8 _newState) public onlyCommitteeMembers(_caller) {
+    function setHackathonState(uint8 _newState) public onlyCommitteeMembers(msg.sender) {
         require(_newState <= 3 && _newState >= 0, "Not a valid hackathon state!");
         _state = HackathonState(_newState);
+    }
+
+    function getHackathonState() external returns(string){
+        if(_state == HackathonState.UPCOMING) return "upcoming";
+        if(_state == HackathonState.OPEN) return "open";
+        if(_state == HackathonState.CONCLUDED) return "concluded";
+        if(_state == HackathonState.CLOSED) return "closed";
     }
 
     function fundHackathon() external payable returns(uint256 _balance){
@@ -157,7 +172,7 @@ contract HackathonManager is Ownable {
     }
 
     function trackExists(string memory _trackName) internal view returns(bool){
-        if (_hackathonTracks[_trackName]._trackPoolAmount > 0){
+        if (bytes(_hackathonTracks[_trackName]).length != 0){
             return true;
         }
         return false;
@@ -165,11 +180,13 @@ contract HackathonManager is Ownable {
 
     function createTrack(string memory _newTrackName, uint256 _newTrackPoolAmount) external cannotExceedFundedAmount(_newTrackPoolAmount) onlyCommitteeMembers(msg.sender) {
         require(!trackExists(_newTrackName), "This track already exists");
+        require(bytes(_newTrackName).length != 0, "Track name should not be an empty string.");
         Track storage newTrack = _hackathonTracks[_newTrackName];
         newTrack._currentPrizeTotal = 0;
         newTrack._trackName = _newTrackName;
         newTrack._trackPoolAmount = _newTrackPoolAmount;
         _currentTrackTotal += _newTrackPoolAmount;
+        _tracks.push(_newTrackName);
         emit TrackCreated(_newTrackName, _newTrackPoolAmount);
     }
 
@@ -189,9 +206,8 @@ contract HackathonManager is Ownable {
         require(_hackathonTracks[_track]._prizes[_prize]._paid != true, "Prize has already been paid");
         _hackathonTracks[_track]._prizes[_prize]._winner = winner;
         emit PrizeWinnerCaptured(_track, _prize, _team);
-        address payable receiver = payable(winner._participantAddress);
         _hackathonTracks[_track]._prizes[_prize]._paid = true;
-        receiver.transfer(_hackathonTracks[_track]._prizes[_prize]._amount);
+        payable(winner._participantAddress).transfer(_hackathonTracks[_track]._prizes[_prize]._amount);
         emit PrizePaid(_team, receiver, _hackathonTracks[_track]._prizes[_prize]._amount);
     }
 }
