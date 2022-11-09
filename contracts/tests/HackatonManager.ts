@@ -148,11 +148,12 @@ describe("HackathonManager", function () {
 
         // create track with a 1 million dollar bounty!
         const prizeName = "1 million dollar bounty";
+        const prizeAmount = 5;
         const tx = await hackatonManager.createTrack(trackName, 100);
         await tx.wait();
 
         // add prize to track
-        await (await hackatonManager.addPrizeToTrack(trackName, prizeName, 1)).wait();
+        await (await hackatonManager.addPrizeToTrack(trackName, prizeName, prizeAmount)).wait();
             
 
         // set hackaton state to open
@@ -180,7 +181,10 @@ describe("HackathonManager", function () {
 
         // capture winner
         await expect(hackatonManager.captureWinner(trackName,prizeName, teamname))
-            .to.emit(hackatonManager,"PrizePaid" );
+            .to.emit(hackatonManager,"PrizePaid" )
+            .to.changeEtherBalance(hackatonOwner.address, prizeAmount);
+
+        
     });
 
 });
