@@ -6,7 +6,7 @@ import contractAddresses from "constants/contractAddresses"
 type HackatonManagerFactory = {
     deploymentFee: undefined | BigNumber
     loading: boolean
-    initHackatonManager: () => void
+    initHackatonManagerFactory: () => void
     createNewHack: (name: string) => string
     createSignedContract: (signer: Signer) => void
     resetSignedContract: () => void
@@ -30,18 +30,18 @@ export const useHackatonManagerFactoryContext = () => {
     }
 
     const resetSignedContract = () => {
-        setSignedContract(null)
+        setSignedContract(undefined)
     }
 
-    const initHackatonManager = async () => {
+    const initHackatonManagerFactory = async () => {
         setLoading(true)
         const provider = new ethers.providers.Web3Provider(window.ethereum)
-        const сontract_ = new ethers.Contract(
+        const contract_ = new ethers.Contract(
             contractAddresses.hackatonManagerFactoryContract,
             abi.abi,
             provider
         )
-        const [deploymentFee] = await Promise.all([сontract_.deploymentFee()])
+        const [deploymentFee] = await Promise.all([contract_.deploymentFee()])
         setDeploymentFee(deploymentFee)
         setLoading(false)
     }
@@ -71,7 +71,7 @@ export const useHackatonManagerFactoryContext = () => {
         () => ({
             deploymentFee,
             loading,
-            initHackatonManager,
+            initHackatonManagerFactory,
             createNewHack,
             getHackContractAddress,
             createSignedContract,
@@ -80,7 +80,7 @@ export const useHackatonManagerFactoryContext = () => {
         [
             deploymentFee,
             loading,
-            initHackatonManager,
+            initHackatonManagerFactory,
             createNewHack,
             getHackContractAddress,
             createSignedContract,
