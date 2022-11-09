@@ -46,13 +46,43 @@ describe("HackathonManager", function () {
         const projectname = "Wen bounty?";
         const projectlink = "https://localhost:3000";
 
+        const stateBefore =await  hackatonManager._state();
+        expect(stateBefore).to.equal(0);
+
         const tx = await hackatonManager.setHackathonState(hackatonOwner.address, 1);
         await tx.wait();
 
         await expect(hackatonManager.registerParticipant(teamname, projectname, projectlink))
             .to.emit(hackatonManager, "ParticipantRegistered");
+
+        const stateAfter =await  hackatonManager._state();
+        expect(stateAfter).to.equal(1);
+    
     });
 
 
+    it ("Should get state of hackaton", async function() {
+
+        const state =await  hackatonManager._state();
+        console.log("State: " + state);
+    });
+
+
+    it ("Registered participants can submit project", async function() {
+        const teamname = "Team 9";
+        const projectname = "Wen bounty?";
+        const projectlink = "https://localhost:3000";
+
+        const tx = await hackatonManager.setHackathonState(hackatonOwner.address, 1);
+        await tx.wait();
+
+        await expect(hackatonManager.registerParticipant(teamname, projectname, projectlink))
+            .to.emit(hackatonManager, "ParticipantRegistered");
+
+        await expect( hackatonManager.submitProject(teamname))
+            .to.emit(hackatonManager, "ProjectSubmitted")
+            .withArgs(teamname, projectlink);
+
+    });
 
 });
