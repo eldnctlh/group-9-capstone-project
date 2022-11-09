@@ -43,7 +43,7 @@ describe("HackathonManagerFactory", function () {
             const hackName = "revert hack";
 
             // TODO: add value to setFee
-            await hackathonManagerFactory.setFee();
+            await hackathonManagerFactory.setFee(11);
             
             await expect(hackathonManagerFactory.createNewHack(hackName, {value: 10}))
                 .to.revertedWithoutReason();
