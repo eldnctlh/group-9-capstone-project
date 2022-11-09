@@ -7,10 +7,11 @@ import { HackathonManager } from "../typechain-types";
 describe("HackathonManager", function () {
 
     let hackatonManager : HackathonManager;
+    let hackatonOwner : any;
 
     beforeEach(async function() {
 
-        const [hackatonOwner] = await ethers.getSigners();
+        [hackatonOwner] = await ethers.getSigners();
         const hackatonName = "name";
         const HackathonManager = await ethers.getContractFactory("HackathonManager");
 
@@ -27,5 +28,31 @@ describe("HackathonManager", function () {
         await expect(hackatonManager.createTrack(trackName, 1))
             .to.emit(hackatonManager,"TrackCreated");
     });
+
+    it ("Participants cannot register when hackaton not open ", async function () {
+
+        const teamname = "Team 9";
+        const projectname = "Wen bounty?";
+        const projectlink = "https://localhost:3000";
+
+        await expect(hackatonManager.registerParticipant(teamname, projectname, projectlink))
+        .to.revertedWith('The hackathon is not open!');
+
+    });
+
+    it ("Participants can register when hackaton OPEN ", async function () {
+
+        const teamname = "Team 9";
+        const projectname = "Wen bounty?";
+        const projectlink = "https://localhost:3000";
+
+        const tx = await hackatonManager.setHackathonState(hackatonOwner.address, 1);
+        await tx.wait();
+
+        await expect(hackatonManager.registerParticipant(teamname, projectname, projectlink))
+            .to.emit(hackatonManager, "ParticipantRegistered");
+    });
+
+
 
 });
