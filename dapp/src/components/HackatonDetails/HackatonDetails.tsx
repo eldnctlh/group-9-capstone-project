@@ -16,7 +16,7 @@ const HackatonDetails = () => {
             initHackatonManager(query.address)
         }
     }, [query.address])
-    console.log(hackatonState)
+
     const renderForms = () => {
         if (hackatonState.funded) {
             return (
