@@ -18,27 +18,28 @@ const HackatonDetails = () => {
         }
     }, [query.address])
 
-    const renderTracks = () => (
-        <div>
-            <div className="flex items-center mt-4">
-                <h2 className="text-xl font-bold text-gray-200 whitespace-nowrap">
-                    Existing tracks
-                </h2>
-                <div className="ml-5 h-px w-full bg-zinc-400"></div>
+    const renderTracks = () =>
+        hackatonState.tracks.length ? (
+            <div>
+                <div className="flex items-center mt-4">
+                    <h2 className="text-xl font-bold text-gray-200 whitespace-nowrap">
+                        Existing tracks
+                    </h2>
+                    <div className="ml-5 h-px w-full bg-zinc-400"></div>
+                </div>
+                <div className="grid grid-cols-4 gap-4">
+                    {hackatonState.tracks.map((track) => (
+                        <div className="col-span-2 mt-2">
+                            <h3 className="mt-1 font-bold text-gray-200">{track.name}</h3>
+                            <p className="mt-1 text-gray-400">
+                                {ethers.utils.formatEther(track.poolAmount)} ETH
+                            </p>
+                        </div>
+                    ))}
+                </div>
+                <div className="mt-4 mb-10 h-px w-full bg-zinc-400"></div>
             </div>
-            <div className="grid grid-cols-4 gap-4">
-                {hackatonState.tracks.map((track) => (
-                    <div className="col-span-2 mt-2">
-                        <h3 className="mt-1 font-bold text-gray-200">{track.name}</h3>
-                        <p className="mt-1 text-gray-400">
-                            {ethers.utils.formatEther(track.poolAmount)} ETH
-                        </p>
-                    </div>
-                ))}
-            </div>
-            <div className="mt-4 mb-10 h-px w-full bg-zinc-400"></div>
-        </div>
-    )
+        ) : null
 
     const renderForms = () => {
         if (hackatonState.funded) {

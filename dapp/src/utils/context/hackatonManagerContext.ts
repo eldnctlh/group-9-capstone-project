@@ -20,13 +20,6 @@ export type Participant = {
     projectLink: string
 }
 
-enum HackatonCurrentState {
-    Upcoming = "upcoming",
-    Open = "open",
-    Closed = "closed",
-    Concluded = "concluded",
-}
-
 type HackatonState = {
     name: string
     description: string
@@ -34,7 +27,6 @@ type HackatonState = {
     CID: string
     funds: null | BigNumber
     funded: boolean
-    state: HackatonCurrentState
     tracks: OnChainTrack[]
 }
 
@@ -57,13 +49,13 @@ const defaultHackatonState: HackatonState = {
     CID: "",
     funds: null,
     funded: false,
-    state: HackatonCurrentState.Upcoming,
     tracks: [],
 }
 
 export const HackatonManagerContext = createContext<HackatonManager>({})
 
 export const useHackatonManagerContext = () => {
+    const [contract, setContract] = useState<Contract>()
     const [signedContract, setSignedContract] = useState<Contract>()
     const [loading, setLoading] = useState<boolean>(true)
     const [contractAddress, setContractAddress] = useState<string>("")
@@ -77,15 +69,14 @@ export const useHackatonManagerContext = () => {
     const resetSignedContract = () => {
         setSignedContract(undefined)
     }
-    const initHackatonManager = async (contractAddress: string) => {
-        setLoading(true)
-        const provider = new ethers.providers.Web3Provider(window.ethereum)
-        const contract_ = new ethers.Contract(contractAddress, abi.abi, provider)
-        const funds = await contract_._hackathonFundBalance()
-        const funded = funds.gt(0)
-        const state = await contract_.getHackathonState()
 
-        const [name, CID] = await Promise.all([contract_._hackathonName(), contract_.getCID()])
+    const updateHackatonState = async (contract_) => {
+        const [name, CID, funds] = await Promise.all([
+            contract_._hackathonName(),
+            contract_.getCID(),
+            await contract_._hackathonFundBalance(),
+        ])
+        const funded = funds.gt(0)
         const length = (await contract_.getCurrentMaxIndexOfTracks()).toNumber()
         const tracks: OnChainTrack[] = []
         let fundedByTracks = BigNumber.from(0)
@@ -114,10 +105,17 @@ export const useHackatonManagerContext = () => {
             CID,
             funds,
             funded,
-            state,
             description,
             tracks,
         })
+    }
+
+    const initHackatonManager = async (contractAddress: string) => {
+        setLoading(true)
+        const provider = new ethers.providers.Web3Provider(window.ethereum)
+        const contract_ = new ethers.Contract(contractAddress, abi.abi, provider)
+        setContract(contract_)
+        await updateHackatonState(contract_)
         setContractAddress(contractAddress)
         setLoading(false)
     }
@@ -129,6 +127,7 @@ export const useHackatonManagerContext = () => {
                 ethers.utils.parseEther(track.trackPrize)
             )
             await rc.wait()
+            await updateHackatonState(contract)
         }
     }
 
@@ -140,6 +139,7 @@ export const useHackatonManagerContext = () => {
                 participant.projectLink
             )
             await rc.wait()
+            await updateHackatonState(contract)
         }
     }
 
@@ -153,6 +153,7 @@ export const useHackatonManagerContext = () => {
                 ...hackatonState,
                 funded: true,
             })
+            await updateHackatonState(contract)
         }
     }
 
@@ -160,6 +161,7 @@ export const useHackatonManagerContext = () => {
         if (signedContract) {
             const rc = await signedContract.addCID(CID)
             await rc.wait()
+            await updateHackatonState(contract)
         }
     }
 
