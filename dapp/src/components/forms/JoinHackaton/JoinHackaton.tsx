@@ -1,36 +1,58 @@
-import React from "react"
+import React, { useState } from "react"
 import { useForm } from "react-hook-form"
+import { toast } from "react-toastify"
 import Input from "components/shared/Input"
 import Button from "components/shared/Button"
+import useHackatonManager, { Participant } from "utils/context/hackatonManagerContext"
+import useWallet from "utils/context/walletContext"
 
 const JoinHackaton: React.FC = () => {
+    const [loading, setLoading] = useState<boolean>(false)
+    const { registerParticipant } = useHackatonManager()
+
+    const { connected } = useWallet()
+
     const {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm()
+    } = useForm<Participant>()
+
+    const onSubmit = async (participant: Participant) => {
+        setLoading(true)
+        try {
+            await registerParticipant(participant)
+            toast(`Track ${participant.teamName} added`)
+        } catch (err) {
+            console.log(err)
+            toast.error(err.message)
+        }
+        setLoading(false)
+    }
 
     return (
-        <form onSubmit={handleSubmit((data) => console.log(data))}>
+        <form onSubmit={handleSubmit(onSubmit)}>
             <Input
-                label="First Name"
-                placeholder="First Name"
-                error={errors.firstName && "First name is required."}
-                {...register("firstName", { required: true })}
+                label="Team Name"
+                placeholder="Team Name"
+                error={errors.teamName && "Team name is required."}
+                {...register("teamName", { required: true })}
             />
             <Input
-                placeholder="Last Name"
-                label="Last Name"
-                error={errors.lastName && "Last name is required."}
-                {...register("lastName", { required: true })}
+                placeholder="Project Name"
+                label="Project Name"
+                error={errors.projectName && "Project name is required."}
+                {...register("projectName", { required: true })}
             />
             <Input
-                placeholder="Age"
-                label="Age"
-                error={errors.age && "Please enter number for age."}
-                {...register("age", { required: true, pattern: /\d+/ })}
+                placeholder="Project Link"
+                label="Project Link"
+                error={errors.projectLink && "Project link is required."}
+                {...register("projectLink", { required: true })}
             />
-            <Button className="mt-5">Submit</Button>
+            <Button loading={loading} disabled={!connected || loading} className="mt-5">
+                Submit
+            </Button>
         </form>
     )
 }
