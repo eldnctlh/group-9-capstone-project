@@ -22,7 +22,7 @@ contract HackathonManagerFactory {
     }
 
     function setFee(uint256 fee) public returns(uint256 _fee){
-        require(msg.sender == Owner, "Only owner can set a fee");
+        require(msg.sender == Owner, "Not owner!");
         deploymentFee = fee;
         _fee = deploymentFee;
     }

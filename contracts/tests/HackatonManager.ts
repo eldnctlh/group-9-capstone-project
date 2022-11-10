@@ -50,7 +50,7 @@ describe("HackathonManager", function () {
         const projectlink = "https://localhost:3000";
 
         await expect(hackatonManager.registerParticipant(teamname, projectname, projectlink))
-        .to.revertedWith('The hackathon is not open!');
+        .to.revertedWith('Hackathon not open!');
 
     });
 
