@@ -5,6 +5,7 @@ import Input from "components/shared/Input"
 import Button from "components/shared/Button"
 import useHackatonManagerFactory from "utils/context/hackatonManagerFactoryContext"
 import useWallet from "utils/context/walletContext"
+import { extractRevertReason } from "utils/helpers"
 
 interface Props {
     setCreatedHackatonAddress: (address: string) => void
@@ -28,8 +29,9 @@ const CreateHackaton: React.FC<Props> = ({ setCreatedHackatonAddress }) => {
             toast(`Hackaton created at ${address}`)
             setCreatedHackatonAddress(address)
         } catch (err) {
-            console.log(err)
-            toast.error(err.message)
+            let msg = extractRevertReason(err)
+
+            toast.error(msg || err.message)
         }
         setLoading(false)
     }

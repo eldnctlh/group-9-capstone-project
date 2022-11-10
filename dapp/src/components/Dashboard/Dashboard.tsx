@@ -5,11 +5,12 @@ import Button from "components/shared/Button"
 import Modal from "components/shared/Modal"
 import JoinHackaton from "components/forms/JoinHackaton"
 import useHackatonManager from "utils/context/hackatonManagerContext"
+import Loader from "components/shared/Loader"
 
 const Dashboard = () => {
     const [deadline, setDeadline] = useState<string>("")
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
-    const { initHackatonManager, hackatonState } = useHackatonManager()
+    const { initHackatonManager, hackatonState, loading } = useHackatonManager()
     const { query } = useRouter()
 
     useEffect(() => {
@@ -30,9 +31,14 @@ const Dashboard = () => {
             <p className="my-2 text-lg text-gray-100">$100,000 USD in NEAR</p>
         </div>
     )
-
-    return (
-        <div>
+    console.log(loading)
+    console.log(hackatonState)
+    return loading ? (
+        <div className="flex justify-center py-10">
+            <Loader />
+        </div>
+    ) : (
+        <>
             <div className="mt-10 py-10 bg-zinc-800">
                 <div className="container mx-auto">
                     <div className="grid grid-cols-5 gap-4">
@@ -98,7 +104,7 @@ const Dashboard = () => {
                     <JoinHackaton />
                 </div>
             </Modal>
-        </div>
+        </>
     )
 }
 export default Dashboard

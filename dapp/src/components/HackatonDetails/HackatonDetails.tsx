@@ -8,7 +8,8 @@ import Loader from "components/shared/Loader"
 import { ethers } from "ethers"
 
 const HackatonDetails = () => {
-    const { initHackatonManager, hackatonState, loading } = useHackatonManager()
+    const { initHackatonManager, hackatonState, loading, retrieveDescription } =
+        useHackatonManager()
     const { query } = useRouter()
 
     useEffect(() => {
@@ -56,7 +57,10 @@ const HackatonDetails = () => {
                     <Loader />
                 </div>
             ) : (
-                renderForms()
+                <>
+                    <h2 className="text-4xl my-5 font-bold text-gray-100">{hackatonState.name}</h2>
+                    {renderForms()}
+                </>
             )}
         </div>
     )

@@ -5,6 +5,7 @@ import Input from "components/shared/Input"
 import Button from "components/shared/Button"
 import useHackatonManager from "utils/context/hackatonManagerContext"
 import useWallet from "utils/context/walletContext"
+import { extractRevertReason } from "utils/helpers"
 
 const FundHacakton: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(false)
@@ -23,8 +24,8 @@ const FundHacakton: React.FC = () => {
             await fundHackaton(data.fundAmount)
             toast(`Hackaton Funded with ${data.fundAmount} ETH`)
         } catch (err) {
-            console.log(err)
-            toast.error(err.message)
+            const msg = extractRevertReason(err)
+            toast.error(msg || err.message)
         }
         setLoading(false)
     }

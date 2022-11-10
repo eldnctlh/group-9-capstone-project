@@ -5,6 +5,7 @@ import Input from "components/shared/Input"
 import Button from "components/shared/Button"
 import useWallet from "utils/context/walletContext"
 import useHackatonManager, { Track } from "utils/context/hackatonManagerContext"
+import { extractRevertReason } from "utils/helpers"
 
 const HackatonMainData: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(false)
@@ -34,8 +35,10 @@ const HackatonMainData: React.FC = () => {
                 await createTracks(track)
                 toast(`Track ${track.trackName} added`)
             } catch (err) {
+                const msg = extractRevertReason(err)
+
                 console.log(err)
-                toast.error(err.message)
+                toast.error(msg || err.message)
             }
         }
         setLoading(false)

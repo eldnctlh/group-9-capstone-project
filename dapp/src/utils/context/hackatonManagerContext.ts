@@ -1,6 +1,7 @@
 import { ethers, BigNumber, Contract, Signer } from "ethers"
 import { createContext, useContext, useMemo, useState } from "react"
 import abi from "constants/abi/hackatonManagerAbi"
+// import { retrieve } from "utils/services/web3Storage"
 
 export type Track = {
     trackName: string
@@ -13,8 +14,25 @@ export type Participant = {
     projectLink: string
 }
 
+enum HackatonCurrentState {
+    Upcoming = "upcoming",
+    Open = "open",
+    Closed = "closed",
+    Concluded = "concluded",
+}
+
+type HackatonState = {
+    name: string
+    description: string
+    CID: string
+    funds: null | BigNumber
+    funded: boolean
+    state: HackatonCurrentState
+}
+
 type HackatonManager = {
     loading: boolean
+    hackatonState: HackatonState
     initHackatonManager: (address: string) => void
     createSignedContract: (signer: Signer) => void
     resetSignedContract: () => void
@@ -24,18 +42,13 @@ type HackatonManager = {
     fundHackaton: (amount: string) => void
 }
 
-type HackatonState = {
-    name: string
-    CID: string
-    funds: null | BigNumber
-    funded: boolean
-}
-
 const defaultHackatonState: HackatonState = {
     name: "",
+    description: "",
     CID: "",
     funds: null,
     funded: false,
+    state: HackatonCurrentState.Upcoming,
 }
 
 export const HackatonManagerContext = createContext<HackatonManager>({})
@@ -54,19 +67,31 @@ export const useHackatonManagerContext = () => {
     const resetSignedContract = () => {
         setSignedContract(undefined)
     }
-
     const initHackatonManager = async (contractAddress: string) => {
         setLoading(true)
         const provider = new ethers.providers.Web3Provider(window.ethereum)
         const contract_ = new ethers.Contract(contractAddress, abi.abi, provider)
         const funds = await contract_._hackathonFundBalance()
         const funded = funds.gt(0)
-        const [name] = await Promise.all([contract_._hackathonName()])
+        const state = await contract_.getHackathonState()
+
+        const [name, CID] = await Promise.all([contract_._hackathonName(), contract_.getCID()])
+        let description = ""
+        if (CID) {
+            // const res = await retrieve(CID)
+            // const files = await res?.files()
+            // if (files && files.length) {
+            //     const json = JSON.parse(await files[0].text())
+            //     description = json.description
+            // }
+        }
         setHackatonState({
             name,
-            CID: "",
+            CID,
             funds,
             funded,
+            state,
+            description,
         })
         setContractAddress(contractAddress)
         setLoading(false)

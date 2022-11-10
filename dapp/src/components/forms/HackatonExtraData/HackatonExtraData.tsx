@@ -1,19 +1,21 @@
 import React, { useState } from "react"
 import { useForm } from "react-hook-form"
+import { useRouter } from "next/router"
 import { toast } from "react-toastify"
 import Input from "components/shared/Input"
 import Button from "components/shared/Button"
-import useWeb3Storage from "utils/hooks/useWeb3Storage"
 import useHackatonManager from "utils/context/hackatonManagerContext"
-import { useRouter } from "next/router"
+import useWallet from "utils/context/walletContext"
+import { makeFileObjects, storeFiles } from "utils/services/web3Storage"
 
 const HackatonExtraData: React.FC = () => {
     // const [coverImageSrc, setCoverImageSrc] = useState<string>("")
     // const [profileImageSrc, setProfileImageSrc] = useState<string>("")
     const [loading, setLoading] = useState<boolean>(false)
     const { addCID } = useHackatonManager()
-    const { makeFileObjects, storeFiles } = useWeb3Storage()
+
     const { query } = useRouter()
+    const { connected } = useWallet()
 
     const {
         register,
@@ -50,13 +52,13 @@ const HackatonExtraData: React.FC = () => {
         // upload to ipfs
 
         console.log("upload started")
-        const fileToUpload = makeFileObjects(data, fileName)
+        const fileToUpload = await makeFileObjects(data, fileName)
         try {
             const ipfsRes = await storeFiles(fileToUpload)
             const responseUrl = `https://${ipfsRes}.ipfs.w3s.link/${fileName}`
+            await addCID(ipfsRes)
             toast(`Successfuly uploaded to ${responseUrl}`)
             toast(`CID ${ipfsRes}`)
-            await addCID(ipfsRes)
             console.log("upload done", responseUrl)
         } catch (err) {
             console.log(err)
@@ -93,7 +95,7 @@ const HackatonExtraData: React.FC = () => {
                 <img className="w-full my-5" src={coverImageSrc} alt="coverImage" />
             ) : null} */}
 
-            <Button loading={loading} className="mt-5">
+            <Button loading={loading} disabled={!connected || loading} className="mt-5">
                 Add data
             </Button>
         </form>
