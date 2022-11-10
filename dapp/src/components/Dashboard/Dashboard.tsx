@@ -37,15 +37,6 @@ const Dashboard = () => {
         }
     }, [hackatonState.CID])
 
-    const renderPrize = () => (
-        <div>
-            <h3 className="my-2 text-lg font-bold text-gray-100">
-                Native Track Prizes | First Place
-            </h3>
-            <p className="my-2 text-lg text-gray-100">$100,000 USD in NEAR</p>
-        </div>
-    )
-
     const renderTracks = () =>
         hackatonState.tracks.map((track) => (
             <div>
@@ -82,7 +73,10 @@ const Dashboard = () => {
                             <div className="h-px w-full bg-zinc-400"></div>
                             <div className="flex justify-between">
                                 <h3 className="my-4 text-lg text-gray-200">
-                                    <span className="font-bold">$1,000,000</span> in prizes
+                                    <span className="font-bold">
+                                        {ethers.utils.formatEther(hackatonState.funds)} ETH
+                                    </span>{" "}
+                                    in prizes
                                 </h3>
                                 <h3 className="my-4 text-lg text-gray-200">
                                     <span className="font-bold">25</span> participants

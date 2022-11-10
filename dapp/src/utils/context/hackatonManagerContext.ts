@@ -30,6 +30,7 @@ enum HackatonCurrentState {
 type HackatonState = {
     name: string
     description: string
+    fundedByTracks: null | BigNumber
     CID: string
     funds: null | BigNumber
     funded: boolean
@@ -51,6 +52,7 @@ type HackatonManager = {
 
 const defaultHackatonState: HackatonState = {
     name: "",
+    fundedByTracks: null,
     description: "",
     CID: "",
     funds: null,
@@ -86,6 +88,7 @@ export const useHackatonManagerContext = () => {
         const [name, CID] = await Promise.all([contract_._hackathonName(), contract_.getCID()])
         const length = (await contract_.getCurrentMaxIndexOfTracks()).toNumber()
         const tracks: OnChainTrack[] = []
+        let fundedByTracks = BigNumber.from(0)
         for (let i = 0; i <= length; i++) {
             const trackName = await contract_.getTrackByIndex(i)
             const track = await contract_._hackathonTracks(trackName)
@@ -94,6 +97,7 @@ export const useHackatonManagerContext = () => {
                 poolAmount: track._trackPoolAmount,
                 prizeTotal: track._currentPrizeTotal,
             })
+            fundedByTracks = fundedByTracks.add(track._trackPoolAmount)
         }
         let description = ""
         if (CID) {
@@ -105,6 +109,7 @@ export const useHackatonManagerContext = () => {
             // }
         }
         setHackatonState({
+            fundedByTracks,
             name,
             CID,
             funds,
