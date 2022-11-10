@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react"
 import { DateTime } from "luxon"
 import { useRouter } from "next/router"
+import { ethers } from "ethers"
 import Button from "components/shared/Button"
 import Modal from "components/shared/Modal"
 import JoinHackaton from "components/forms/JoinHackaton"
 import useHackatonManager from "utils/context/hackatonManagerContext"
 import Loader from "components/shared/Loader"
 import { getDescription } from "utils/services/web3Storage"
-import { ethers } from "ethers"
 
 const Dashboard = () => {
     const [deadline, setDeadline] = useState<string>("")

@@ -1,13 +1,15 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import { useRouter } from "next/router"
+import { ethers } from "ethers"
 import HackatonMainData from "components/forms/HackatonMainData"
 import HackatonExtraData from "components/forms/HackatonExtraData"
 import FundHackaton from "components/forms/FundHackaton"
 import useHackatonManager from "utils/context/hackatonManagerContext"
 import Loader from "components/shared/Loader"
-import { ethers } from "ethers"
+import { getDescription } from "utils/services/web3Storage"
 
 const HackatonDetails = () => {
+    const [description, setDescription] = useState<string>("")
     const { initHackatonManager, hackatonState, loading, retrieveDescription } =
         useHackatonManager()
     const { query } = useRouter()
@@ -17,6 +19,17 @@ const HackatonDetails = () => {
             initHackatonManager(query.address)
         }
     }, [query.address])
+
+    useEffect(() => {
+        if (hackatonState.CID) {
+            handleSetDescription()
+        }
+    }, [hackatonState.CID])
+
+    const handleSetDescription = async () => {
+        const desc = await getDescription(hackatonState.CID)
+        setDescription(desc)
+    }
 
     const renderTracks = () =>
         hackatonState.tracks.length ? (
@@ -29,7 +42,7 @@ const HackatonDetails = () => {
                 </div>
                 <div className="grid grid-cols-4 gap-4">
                     {hackatonState.tracks.map((track) => (
-                        <div className="col-span-2 mt-2">
+                        <div key={track.name} className="col-span-2 mt-2">
                             <h3 className="mt-1 font-bold text-gray-200">{track.name}</h3>
                             <p className="mt-1 text-gray-400">
                                 {ethers.utils.formatEther(track.poolAmount)} ETH
@@ -92,6 +105,7 @@ const HackatonDetails = () => {
             ) : (
                 <>
                     <h2 className="text-4xl my-5 font-bold text-gray-100">{hackatonState.name}</h2>
+                    <p className="text-xl my-5 text-gray-400">{description}</p>
                     {renderForms()}
                 </>
             )}
