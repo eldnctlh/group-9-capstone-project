@@ -6,10 +6,12 @@ import Modal from "components/shared/Modal"
 import JoinHackaton from "components/forms/JoinHackaton"
 import useHackatonManager from "utils/context/hackatonManagerContext"
 import Loader from "components/shared/Loader"
+import { getDescription } from "utils/services/web3Storage"
 
 const Dashboard = () => {
     const [deadline, setDeadline] = useState<string>("")
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
+    const [description, setDescription] = useState<string>("")
     const { initHackatonManager, hackatonState, loading } = useHackatonManager()
     const { query } = useRouter()
 
@@ -23,6 +25,17 @@ const Dashboard = () => {
         }
     }, [query.address])
 
+    const handleSetDescription = async () => {
+        const desc = await getDescription(hackatonState.CID)
+        setDescription(desc)
+    }
+
+    useEffect(() => {
+        if (hackatonState.CID) {
+            handleSetDescription()
+        }
+    }, [hackatonState.CID])
+
     const renderPrize = () => (
         <div>
             <h3 className="my-2 text-lg font-bold text-gray-100">
@@ -31,8 +44,7 @@ const Dashboard = () => {
             <p className="my-2 text-lg text-gray-100">$100,000 USD in NEAR</p>
         </div>
     )
-    console.log(loading)
-    console.log(hackatonState)
+
     return loading ? (
         <div className="flex justify-center py-10">
             <Loader />
@@ -46,11 +58,7 @@ const Dashboard = () => {
                             <h2 className="text-4xl font-bold text-gray-100">
                                 {hackatonState.name}
                             </h2>
-                            <p className="my-4 text-lg text-gray-400">
-                                Our world has changed. Meet new challenges in a way a true buidler
-                                would do – hack your way to the top. Build the next big thing on
-                                NEAR.
-                            </p>
+                            <p className="my-4 text-lg text-gray-400">{description}</p>
                             <Button onClick={() => setIsModalOpen(true)}>Join Hackaton</Button>
                         </div>
                         <div className="col-span-2 bg-zinc-700 p-3">

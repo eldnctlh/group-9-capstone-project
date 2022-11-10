@@ -20,11 +20,22 @@ export const storeFiles = async (files: any) => {
 }
 
 export const retrieve = async (cid: string) => {
+    console.log(process.env)
     const client = makeStorageClient()
+    console.log(client)
     const res = await client.get(cid)
     console.log(`Got a response! [${res.status}] ${res.statusText}`)
     if (!res.ok) {
         throw new Error(`failed to get ${cid}`)
     }
     return res
+}
+
+export const getDescription = async (CID: string) => {
+    const res = await retrieve(CID)
+    const files = await res?.files()
+    if (files && files.length) {
+        const json = JSON.parse(await files[0].text())
+        return json.description
+    }
 }
