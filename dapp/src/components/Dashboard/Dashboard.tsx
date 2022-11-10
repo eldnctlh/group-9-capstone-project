@@ -7,6 +7,7 @@ import JoinHackaton from "components/forms/JoinHackaton"
 import useHackatonManager from "utils/context/hackatonManagerContext"
 import Loader from "components/shared/Loader"
 import { getDescription } from "utils/services/web3Storage"
+import { ethers } from "ethers"
 
 const Dashboard = () => {
     const [deadline, setDeadline] = useState<string>("")
@@ -44,6 +45,16 @@ const Dashboard = () => {
             <p className="my-2 text-lg text-gray-100">$100,000 USD in NEAR</p>
         </div>
     )
+
+    const renderTracks = () =>
+        hackatonState.tracks.map((track) => (
+            <div>
+                <h3 className="my-2 text-lg font-bold text-gray-100">{track.name}</h3>
+                <p className="my-2 text-lg text-gray-100">
+                    {ethers.utils.formatEther(track.poolAmount)} ETH
+                </p>
+            </div>
+        ))
 
     return loading ? (
         <div className="flex justify-center py-10">
@@ -91,18 +102,13 @@ const Dashboard = () => {
                         <div className="grid my-4 grid-cols-2 gap-4">
                             <div className="col-span-2">
                                 <h3 className="my-2 text-lg font-bold text-gray-100">
-                                    $1,000,000 in prizes
+                                    {ethers.utils.formatEther(hackatonState.funds)} ETH in prizes
                                 </h3>
                                 <p className="my-2 text-lg text-gray-100">
                                     Prizes paid in cryptocurrency
                                 </p>
                             </div>
-                            {renderPrize()}
-                            {renderPrize()}
-                            {renderPrize()}
-                            {renderPrize()}
-                            {renderPrize()}
-                            {renderPrize()}
+                            {renderTracks()}
                         </div>
                     </div>
                 </div>

@@ -30,7 +30,7 @@ const Home: NextPage = () => {
 
         setTimeout(() => {
             fadeIn()
-        }, 8500)
+        }, 2500)
     }, [])
 
     const teamMates = [

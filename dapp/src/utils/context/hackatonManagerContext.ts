@@ -8,6 +8,12 @@ export type Track = {
     trackPrize: string
 }
 
+type OnChainTrack = {
+    name: string
+    poolAmount: number
+    prizeTotal: number
+}
+
 export type Participant = {
     teamName: string
     projectName: string
@@ -28,6 +34,7 @@ type HackatonState = {
     funds: null | BigNumber
     funded: boolean
     state: HackatonCurrentState
+    tracks: OnChainTrack[]
 }
 
 type HackatonManager = {
@@ -49,6 +56,7 @@ const defaultHackatonState: HackatonState = {
     funds: null,
     funded: false,
     state: HackatonCurrentState.Upcoming,
+    tracks: [],
 }
 
 export const HackatonManagerContext = createContext<HackatonManager>({})
@@ -76,6 +84,17 @@ export const useHackatonManagerContext = () => {
         const state = await contract_.getHackathonState()
 
         const [name, CID] = await Promise.all([contract_._hackathonName(), contract_.getCID()])
+        const length = (await contract_.getCurrentMaxIndexOfTracks()).toNumber()
+        const tracks: OnChainTrack[] = []
+        for (let i = 0; i <= length; i++) {
+            const trackName = await contract_.getTrackByIndex(i)
+            const track = await contract_._hackathonTracks(trackName)
+            tracks.push({
+                name: track._trackName,
+                poolAmount: track._trackPoolAmount,
+                prizeTotal: track._currentPrizeTotal,
+            })
+        }
         let description = ""
         if (CID) {
             // const res = await retrieve(CID)
@@ -92,6 +111,7 @@ export const useHackatonManagerContext = () => {
             funded,
             state,
             description,
+            tracks,
         })
         setContractAddress(contractAddress)
         setLoading(false)
