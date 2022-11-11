@@ -30,6 +30,7 @@ type HackatonState = {
     CID: string
     funds: null | BigNumber
     funded: boolean
+    participants: Participant[]
     tracks: OnChainTrack[]
 }
 
@@ -53,6 +54,7 @@ const defaultHackatonState: HackatonState = {
     funds: null,
     funded: false,
     tracks: [],
+    participants: []
 }
 
 export const HackatonManagerContext = createContext<HackatonManager>({})
@@ -84,7 +86,6 @@ export const useHackatonManagerContext = () => {
         const tracks: OnChainTrack[] = []
         let fundedByTracks = BigNumber.from(0)
 
-        // if none are found. Show nothing
         for (let i = 0; i < length; i++) {
             const trackName = await contract_.getTrackByIndex(i)
             const track = await contract_._hackathonTracks(trackName)
@@ -95,6 +96,14 @@ export const useHackatonManagerContext = () => {
             })
             fundedByTracks = fundedByTracks.add(track._trackPoolAmount)
         }
+
+        const participants = []
+        const participantsLength = await contract_.ParticipantsLength()
+        for (let i = 0; i < participantsLength; i++) {
+            const participant = await contract_._participants(i)
+            participants.push( participant)
+        }
+
         let description = ""
         if (CID) {
             // const res = await retrieve(CID)
@@ -112,6 +121,7 @@ export const useHackatonManagerContext = () => {
             funded,
             description,
             tracks,
+            participants
         })
     }
 

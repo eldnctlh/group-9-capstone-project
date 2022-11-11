@@ -107,6 +107,36 @@ const Dashboard = () => {
                     </div>
                 </div>
             </div>
+
+
+            <div className="container mx-auto mt-10">
+                <div className="grid grid-cols-5 gap-4">
+                    <div className="col-span-3">
+                        <div className="flex items-center">
+                            <h2 className="text-4xl font-bold text-gray-100">Participants</h2>
+                            <div className="ml-5 h-px w-full bg-zinc-400"></div>
+                        </div>
+                        <div className="grid my-4 grid-cols-2 gap-4">
+                            <div className="col-span-2">
+                                <p className="my-2 text-lg text-gray-100">
+
+                                    {hackatonState.participants?.map((item) =>
+                                        <div>
+                                <h3 className="my-2 text-lg font-bold text-gray-100">
+
+                                            <div>teamname: {item[0]}</div>
+                                </h3>
+                                            <div>projectname: {item[1]}</div>
+                                            <div>project link: {item[2]}</div>
+                                            <div>signup address: {item[6]}</div>
+                                        </div>
+                                    )}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <Modal title="Join Hackaton" isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
                 <div className="w-96">
                     <JoinHackaton />

@@ -43,18 +43,8 @@ describe("HackathonManager", function () {
     });
 
 
-    it ("Participants cannot register when hackaton not open ", async function () {
 
-        const teamname = "Team 9";
-        const projectname = "Wen bounty?";
-        const projectlink = "https://localhost:3000";
-
-        await expect(hackatonManager.registerParticipant(teamname, projectname, projectlink))
-        .to.revertedWith('Hackathon not open!');
-
-    });
-
-    it ("Participants can register when hackaton OPEN ", async function () {
+    it ("Participants can register ", async function () {
 
         const teamname = "Team 9";
         const projectname = "Wen bounty?";
@@ -63,14 +53,9 @@ describe("HackathonManager", function () {
         const stateBefore =await  hackatonManager._state();
         expect(stateBefore).to.equal(0);
 
-        const tx = await hackatonManager.setHackathonState(1);
-        await tx.wait();
-
         await expect(hackatonManager.registerParticipant(teamname, projectname, projectlink))
             .to.emit(hackatonManager, "ParticipantRegistered");
 
-        const stateAfter =await  hackatonManager._state();
-        expect(stateAfter).to.equal(1);
     
     });
 
@@ -87,9 +72,7 @@ describe("HackathonManager", function () {
         const projectname = "Wen bounty?";
         const projectlink = "https://localhost:3000";
 
-        const tx = await hackatonManager.setHackathonState(1);
-        await tx.wait();
-
+    
         await expect(hackatonManager.registerParticipant(teamname, projectname, projectlink))
             .to.emit(hackatonManager, "ParticipantRegistered");
 
@@ -98,50 +81,6 @@ describe("HackathonManager", function () {
             .withArgs(teamname, projectlink);
 
     });
-
-    it ("Submitted project can be validated (Approved)", async () => {
-
-        const teamname = "Team 9";
-        const projectname = "Wen bounty?";
-        const projectlink = "https://localhost:3000";
-
-        const tx = await hackatonManager.setHackathonState(1);
-        await tx.wait();
-
-        await expect(hackatonManager.registerParticipant(teamname, projectname, projectlink))
-            .to.emit(hackatonManager, "ParticipantRegistered");
-
-        await expect( hackatonManager.submitProject(teamname))
-            .to.emit(hackatonManager, "ProjectSubmitted")
-            .withArgs(teamname, projectlink);
-
-        await expect (hackatonManager.validateTeamProject(teamname, true))
-            .to.emit(hackatonManager, "ProjectApproved")
-            .withArgs(teamname,projectname, hackatonOwner.address);
-
-    })
-
-    it ("Submitted project can be validated (Rejected)", async () => {
-
-        const teamname = "Team 9";
-        const projectname = "Wen bounty?";
-        const projectlink = "https://localhost:3000";
-
-        const tx = await hackatonManager.setHackathonState(1);
-        await tx.wait();
-
-        await expect(hackatonManager.registerParticipant(teamname, projectname, projectlink))
-            .to.emit(hackatonManager, "ParticipantRegistered");
-
-        await expect( hackatonManager.submitProject(teamname))
-            .to.emit(hackatonManager, "ProjectSubmitted")
-            .withArgs(teamname, projectlink);
-
-        await expect (hackatonManager.validateTeamProject(teamname, false))
-            .to.emit(hackatonManager, "ProjectRejected")
-            .withArgs(teamname,projectname, hackatonOwner.address);
-
-    })
 
     it("Capture winner emits ['prize paid']", async () => {
 
@@ -156,8 +95,6 @@ describe("HackathonManager", function () {
         await (await hackatonManager.addPrizeToTrack(trackName, prizeName, prizeAmount)).wait();
             
 
-        // set hackaton state to open
-        await (await hackatonManager.setHackathonState(1)).wait();
         
         // participant registers
         const teamname = "Team 9";
@@ -172,14 +109,7 @@ describe("HackathonManager", function () {
         await (await hackatonManager.submitProject(teamname)).wait();
 
 
-        // commitee validates team project
-        await (await (hackatonManager.validateTeamProject(teamname, true))).wait();
-        
-
-        // set hackaton state to closed
-        await (await hackatonManager.setHackathonState( 2)).wait();
-
-        // capture winner
+       // capture winner
         await expect(hackatonManager.captureWinner(trackName,prizeName, teamname))
             .to.emit(hackatonManager,"PrizePaid" )
             .to.changeEtherBalance(hackatonOwner.address, prizeAmount);

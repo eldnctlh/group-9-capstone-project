@@ -23,6 +23,11 @@ return (
                                     Manage hackaton
                                 </p>
                             </Link>
+                            <Link href={`/hackaton/${item[1]}`}>
+                                <p className="cursor-pointer text-blue-300">
+                                    Join hackaton
+                                </p>
+                            </Link>
                             </li>
                             </div>
                         
