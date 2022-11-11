@@ -3,12 +3,11 @@ import { createContext, useContext, useMemo, useState } from "react"
 
 // import abi from "constants/abi/hackatonManagerFactoryAbi"
 import abi from "../../../../contracts/artifacts/contracts/HackathonManagerFactory.sol/HackathonManagerFactory.json"
-
-import contractAddresses from "constants/contractAddresses"
+import contractAddresses from "constants/contractAddresses.json"
 
 type HackatonManagerFactory = {
     deploymentFee: undefined | BigNumber
-    listOfHackatons: undefined | Array<[string,string]>
+    listOfHackatons: undefined | Array<[string, string]>
     loading: boolean
     initHackatonManagerFactory: () => void
     createNewHack: (name: string) => string
@@ -23,11 +22,12 @@ export const useHackatonManagerFactoryContext = () => {
     const [signedContract, setSignedContract] = useState<Contract>()
     const [loading, setLoading] = useState<boolean>(false)
     const [deploymentFee, setDeploymentFee] = useState<BigNumber>()
-    const [listOfHackatons, setListOfHackatons] = useState<Array<[string,string]>>()
+    const [listOfHackatons, setListOfHackatons] = useState<Array<[string, string]>>()
 
-    const createSignedContract = (signer: Signer) => {
+    const createSignedContract = async (signer: Signer) => {
+
         const сontract_ = new ethers.Contract(
-            contractAddresses.hackatonManagerFactoryContract,
+            contractAddresses.hackatonManagerFactoryContract[await signer.getChainId()],
             abi.abi,
             signer
         )
@@ -41,30 +41,32 @@ export const useHackatonManagerFactoryContext = () => {
     const initHackatonManagerFactory = async () => {
         setLoading(true)
         const provider = new ethers.providers.Web3Provider(window.ethereum)
+        const chainId = (await provider.getNetwork()).chainId;
         const contract_ = new ethers.Contract(
-            contractAddresses.hackatonManagerFactoryContract,
+            contractAddresses.hackatonManagerFactoryContract[chainId],
             abi.abi,
             provider
         )
+
         const [deploymentFee] = await Promise.all([contract_.deploymentFee()])
         const listOfHackatons = await getListOfHackatons(contract_)
-        
-        setListOfHackatons( listOfHackatons )
+
+        setListOfHackatons(listOfHackatons)
         setDeploymentFee(deploymentFee)
         setLoading(false)
     }
 
     const getListOfHackatons = async (contract: Contract) => {
-        
+
         const length = await contract.hackathonLength()
-        const hackatons: Array<[string,string]> = [];
-        
+        const hackatons: Array<[string, string]> = [];
+
         for (let i = 0; i < length; i++) {
-            const name : string = await contract.hackathonNames(i)
-            const address : string = await contract.getHackContractAddress(name)
-            hackatons.push([name,address])
-          }
-        
+            const name: string = await contract.hackathonNames(i)
+            const address: string = await contract.getHackContractAddress(name)
+            hackatons.push([name, address])
+        }
+
         return hackatons
     }
 

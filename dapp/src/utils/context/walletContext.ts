@@ -24,7 +24,7 @@ export const useWalletContext = () => {
         if (wallet.signer) {
             ;(async () => {
                 const address = await wallet.signer.getAddress()
-                const balance = await wallet.signer.getBalance()
+                const balance = await wallet.signer.getBalance()              
                 setWallet({ ...wallet, address, balance })
             })()
         }
