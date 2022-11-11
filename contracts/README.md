@@ -1,13 +1,19 @@
-# Sample Hardhat Project
-
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+# WenBounty Hardhat Project
 
 Try running some of the following tasks:
 
+Compile:
+
 ```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.ts
+yarn hardhat compile
+```
+Test:
+
+```shell
+yarn hardhat test
+```
+Deploy to your localhost:
+
+```shell
+yarn hardhat run --network localhost scripts/deploy.ts
 ```

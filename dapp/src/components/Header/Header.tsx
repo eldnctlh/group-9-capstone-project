@@ -56,6 +56,10 @@ const Header: React.FC = () => {
 
     return (
         <div className="container mx-auto py-2 flex justify-between items-center">
+            <Link href="/list-hackaton">
+                <Button onClick={() => null}>Manage hackaton</Button>
+            </Link>
+
             <Link href="/create-hackaton">
                 <Button onClick={() => null}>Create new hackaton</Button>
             </Link>

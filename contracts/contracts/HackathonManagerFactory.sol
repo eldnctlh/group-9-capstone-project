@@ -39,4 +39,8 @@ contract HackathonManagerFactory {
     function getHackContractAddress(string memory _name) public view returns(address _hackContractAddress){
         _hackContractAddress = address(deployedHackathonManagerContractMapping[_name]);
     } 
+
+    function hackathonLength() public view returns(uint256) {
+        return hackathonNames.length;
+    }
 }

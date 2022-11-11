@@ -131,8 +131,8 @@ contract HackathonManager is Ownable {
         cid = _cid;
     }
 
-    function getCurrentMaxIndexOfTracks()public view shouldHaveTracks returns(uint256){
-        return _tracks.length-1;
+    function getCurrentMaxIndexOfTracks()public view returns(uint256){
+        return _tracks.length;
     }
 
     function getTrackByIndex(uint256 index)public view shouldHaveTracks returns(string memory trackName){

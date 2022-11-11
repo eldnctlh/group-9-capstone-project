@@ -80,7 +80,7 @@ export const useHackatonManagerContext = () => {
         const length = (await contract_.getCurrentMaxIndexOfTracks()).toNumber()
         const tracks: OnChainTrack[] = []
         let fundedByTracks = BigNumber.from(0)
-        for (let i = 0; i <= length; i++) {
+        for (let i = 0; i < length; i++) {
             const trackName = await contract_.getTrackByIndex(i)
             const track = await contract_._hackathonTracks(trackName)
             tracks.push({

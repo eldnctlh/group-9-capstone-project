@@ -1,10 +1,14 @@
 import { ethers, BigNumber, Contract, Signer } from "ethers"
 import { createContext, useContext, useMemo, useState } from "react"
-import abi from "constants/abi/hackatonManagerFactoryAbi"
+
+// import abi from "constants/abi/hackatonManagerFactoryAbi"
+import abi from "../../../../contracts/artifacts/contracts/HackathonManagerFactory.sol/HackathonManagerFactory.json"
+
 import contractAddresses from "constants/contractAddresses"
 
 type HackatonManagerFactory = {
     deploymentFee: undefined | BigNumber
+    listOfHackatons: undefined | Array<[string,string]>
     loading: boolean
     initHackatonManagerFactory: () => void
     createNewHack: (name: string) => string
@@ -19,6 +23,7 @@ export const useHackatonManagerFactoryContext = () => {
     const [signedContract, setSignedContract] = useState<Contract>()
     const [loading, setLoading] = useState<boolean>(false)
     const [deploymentFee, setDeploymentFee] = useState<BigNumber>()
+    const [listOfHackatons, setListOfHackatons] = useState<Array<[string,string]>>()
 
     const createSignedContract = (signer: Signer) => {
         const сontract_ = new ethers.Contract(
@@ -42,8 +47,25 @@ export const useHackatonManagerFactoryContext = () => {
             provider
         )
         const [deploymentFee] = await Promise.all([contract_.deploymentFee()])
+        const listOfHackatons = await getListOfHackatons(contract_)
+        
+        setListOfHackatons( listOfHackatons )
         setDeploymentFee(deploymentFee)
         setLoading(false)
+    }
+
+    const getListOfHackatons = async (contract: Contract) => {
+        
+        const length = await contract.hackathonLength()
+        const hackatons: Array<[string,string]> = [];
+        
+        for (let i = 0; i < length; i++) {
+            const name : string = await contract.hackathonNames(i)
+            const address : string = await contract.getHackContractAddress(name)
+            hackatons.push([name,address])
+          }
+        
+        return hackatons
     }
 
     const createNewHack = async (name: string) => {
@@ -70,6 +92,7 @@ export const useHackatonManagerFactoryContext = () => {
     const hackatonManagerFactoryContext = useMemo(
         () => ({
             deploymentFee,
+            listOfHackatons,
             loading,
             initHackatonManagerFactory,
             createNewHack,
@@ -79,6 +102,7 @@ export const useHackatonManagerFactoryContext = () => {
         }),
         [
             deploymentFee,
+            listOfHackatons,
             loading,
             initHackatonManagerFactory,
             createNewHack,
