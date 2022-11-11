@@ -1,6 +1,9 @@
 import { ethers, BigNumber, Contract, Signer } from "ethers"
 import { createContext, useContext, useMemo, useState } from "react"
-import abi from "constants/abi/hackatonManagerAbi"
+
+//import abi from "constants/abi/hackatonManagerAbi"
+import abi from "../../../../contracts/artifacts/contracts/HackathonManager.sol/HackathonManager.json"
+
 // import { retrieve } from "utils/services/web3Storage"
 
 export type Track = {
@@ -80,6 +83,8 @@ export const useHackatonManagerContext = () => {
         const length = (await contract_.getCurrentMaxIndexOfTracks()).toNumber()
         const tracks: OnChainTrack[] = []
         let fundedByTracks = BigNumber.from(0)
+
+        // if none are found. Show nothing
         for (let i = 0; i < length; i++) {
             const trackName = await contract_.getTrackByIndex(i)
             const track = await contract_._hackathonTracks(trackName)

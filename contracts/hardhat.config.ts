@@ -1,5 +1,8 @@
 import { HardhatUserConfig, task } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
+require('dotenv').config({path:__dirname+'/.env'})
+
+const { ALCHEMY_API_KEY, PRIVATE_KEY } = process.env;
 
 const config: HardhatUserConfig = {
   paths: { tests: "tests" },
@@ -8,6 +11,10 @@ const config: HardhatUserConfig = {
     localhost: {
       url: "http://127.0.0.1:8545"
     },
+    goerli: {
+      url: `https://eth-goerli.alchemyapi.io/v2/${ALCHEMY_API_KEY}`,
+      accounts: [`${PRIVATE_KEY}`]
+    }
   }
 };
 
