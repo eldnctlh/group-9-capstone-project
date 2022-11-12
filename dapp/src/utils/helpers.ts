@@ -11,7 +11,6 @@ export const truncateEthAddress = (address: string) => {
 export const extractRevertReason = (err) => {
     const extractedJSON = extract(err.message)
     let msg = ""
-    console.log(extractedJSON)
     extractedJSON.forEach((obj) => {
         if (obj.message) {
             msg = obj.message

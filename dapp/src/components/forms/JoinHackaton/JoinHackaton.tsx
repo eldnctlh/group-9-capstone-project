@@ -22,7 +22,7 @@ const JoinHackaton: React.FC = () => {
         setLoading(true)
         try {
             await registerParticipant(participant)
-            toast(`Track ${participant.teamName} added`)
+            toast(`Joined to hackaton as ${participant.teamName}`)
         } catch (err) {
             console.log(err)
             toast.error(err.message)

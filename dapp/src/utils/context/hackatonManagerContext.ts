@@ -54,7 +54,7 @@ const defaultHackatonState: HackatonState = {
     funds: null,
     funded: false,
     tracks: [],
-    participants: []
+    participants: [],
 }
 
 export const HackatonManagerContext = createContext<HackatonManager>({})
@@ -101,7 +101,7 @@ export const useHackatonManagerContext = () => {
         const participantsLength = await contract_.ParticipantsLength()
         for (let i = 0; i < participantsLength; i++) {
             const participant = await contract_._participants(i)
-            participants.push( participant)
+            participants.push(participant)
         }
 
         let description = ""
@@ -121,7 +121,7 @@ export const useHackatonManagerContext = () => {
             funded,
             description,
             tracks,
-            participants
+            participants,
         })
     }
 
