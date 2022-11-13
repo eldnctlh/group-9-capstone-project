@@ -108,7 +108,6 @@ const Dashboard = () => {
                 </div>
             </div>
 
-
             <div className="container mx-auto mt-10">
                 <div className="grid grid-cols-5 gap-4">
                     <div className="col-span-3">
@@ -119,17 +118,21 @@ const Dashboard = () => {
                         <div className="grid my-4 grid-cols-2 gap-4">
                             <div className="col-span-2">
                                 <p className="my-2 text-lg text-gray-100">
-
-                                    {hackatonState.participants?.map((item) =>
-                                        <div>
-                                <h3 className="my-2 text-lg font-bold text-gray-100">
-
-                                            <div>teamname: {item[0]}</div>
-                                </h3>
-                                            <div>projectname: {item[1]}</div>
-                                            <div>project link: {item[2]}</div>
-                                            <div>signup address: {item[6]}</div>
-                                        </div>
+                                    {hackatonState.participants.length ? (
+                                        hackatonState.participants.map((item) => (
+                                            <div>
+                                                <h3 className="my-2 text-lg font-bold text-gray-100">
+                                                    <div>Team name: {item[0]}</div>
+                                                </h3>
+                                                <div>Project name: {item[1]}</div>
+                                                <div>Project link: {item[2]}</div>
+                                                <div>Signup address: {item[6]}</div>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <p className="my-2 text-lg text-gray-400">
+                                            No participants yet
+                                        </p>
                                     )}
                                 </p>
                             </div>
