@@ -122,24 +122,26 @@ const HackatonDetails = () => {
                 </h2>
             ) : (
                 <>
-                    {editable ? (
-                        loading ? (
-                            <div className="flex justify-center">
-                                <Loader />
-                            </div>
-                        ) : (
-                            <>
-                                <h2 className="text-4xl my-5 font-bold text-gray-100">
-                                    {hackatonState.name}
-                                </h2>
-                                <p className="text-xl my-5 text-gray-400">{description}</p>
-                                {renderForms()}
-                            </>
-                        )
+                    {loading ? (
+                        <div className="flex justify-center">
+                            <Loader />
+                        </div>
                     ) : (
-                        <h2 className="text-4xl my-5 font-bold text-gray-100 text-center">
-                            Access denied, only committee members can edit hackaton
-                        </h2>
+                        <>
+                            {editable ? (
+                                <>
+                                    <h2 className="text-4xl my-5 font-bold text-gray-100">
+                                        {hackatonState.name}
+                                    </h2>
+                                    <p className="text-xl my-5 text-gray-400">{description}</p>
+                                    {renderForms()}
+                                </>
+                            ) : (
+                                <h2 className="text-4xl my-5 font-bold text-gray-100 text-center">
+                                    Access denied, only committee members can edit hackaton
+                                </h2>
+                            )}
+                        </>
                     )}
                 </>
             )}
