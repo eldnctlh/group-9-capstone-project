@@ -7,18 +7,36 @@ import FundHackaton from "components/forms/FundHackaton"
 import useHackatonManager from "utils/context/hackatonManagerContext"
 import Loader from "components/shared/Loader"
 import { getDescription } from "utils/services/web3Storage"
+import useWallet from "utils/context/walletContext"
 
 const HackatonDetails = () => {
     const [description, setDescription] = useState<string>("")
-    const { initHackatonManager, hackatonState, loading, retrieveDescription } =
-        useHackatonManager()
+    const {
+        initHackatonManager,
+        hackatonState,
+        loading,
+        retrieveDescription,
+        isCommitteMember,
+        contract,
+    } = useHackatonManager()
     const { query } = useRouter()
+    const { wallet } = useWallet()
+    const [editable, setEditable] = useState<boolean>(false)
 
     useEffect(() => {
         if (query.address) {
             initHackatonManager(query.address)
         }
     }, [query.address])
+
+    useEffect(() => {
+        if (wallet.address && contract) {
+            ;(async () => {
+                const isMember = await isCommitteMember(contract, wallet.address)
+                setEditable(isMember)
+            })()
+        }
+    }, [wallet.address, contract])
 
     useEffect(() => {
         if (hackatonState.CID) {
@@ -98,15 +116,31 @@ const HackatonDetails = () => {
 
     return (
         <div className="container mx-auto py-10">
-            {loading ? (
-                <div className="flex justify-center">
-                    <Loader />
-                </div>
+            {!wallet.address ? (
+                <h2 className="text-4xl my-5 font-bold text-gray-100 text-center">
+                    Connect your wallet first!
+                </h2>
             ) : (
                 <>
-                    <h2 className="text-4xl my-5 font-bold text-gray-100">{hackatonState.name}</h2>
-                    <p className="text-xl my-5 text-gray-400">{description}</p>
-                    {renderForms()}
+                    {editable ? (
+                        loading ? (
+                            <div className="flex justify-center">
+                                <Loader />
+                            </div>
+                        ) : (
+                            <>
+                                <h2 className="text-4xl my-5 font-bold text-gray-100">
+                                    {hackatonState.name}
+                                </h2>
+                                <p className="text-xl my-5 text-gray-400">{description}</p>
+                                {renderForms()}
+                            </>
+                        )
+                    ) : (
+                        <h2 className="text-4xl my-5 font-bold text-gray-100 text-center">
+                            Access denied, only committee members can edit hackaton
+                        </h2>
+                    )}
                 </>
             )}
         </div>

@@ -57,7 +57,7 @@ const Header: React.FC = () => {
     return (
         <div className="container mx-auto py-2 flex justify-between items-center">
             <Link href="/list-hackaton">
-                <Button onClick={() => null}>Manage hackaton</Button>
+                <Button onClick={() => null}>Hackatons overview</Button>
             </Link>
 
             <Link href="/create-hackaton">
@@ -69,7 +69,7 @@ const Header: React.FC = () => {
                 </Button>
                 {wallet.address && wallet.balance ? (
                     <span className="bg-blue-200 text-blue-800 -m-4 py-2 px-4 pl-6 font-bold rounded-r-xl inline-flex items-center">
-                        {(+ethers.utils.formatEther(wallet.balance)).toFixed(2)} ETH                        
+                        {(+ethers.utils.formatEther(wallet.balance)).toFixed(2)} ETH
                     </span>
                 ) : null}
             </div>

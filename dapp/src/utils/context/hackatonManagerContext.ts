@@ -44,6 +44,8 @@ type HackatonManager = {
     registerParticipant: (participant: Participant) => void
     addCID: (CID: string) => void
     fundHackaton: (amount: string) => void
+    isCommitteMember: (contract: Contract, address: string) => void
+    contract: Contract
 }
 
 const defaultHackatonState: HackatonState = {
@@ -125,6 +127,11 @@ export const useHackatonManagerContext = () => {
         })
     }
 
+    const isCommitteMember = async (contract: Contract, address: string) => {
+        const isMember = await contract._hackathonCommitteeMembers(address)
+        return isMember
+    }
+
     const initHackatonManager = async (contractAddress: string) => {
         setLoading(true)
         const provider = new ethers.providers.Web3Provider(window.ethereum)
@@ -191,6 +198,8 @@ export const useHackatonManagerContext = () => {
             addCID,
             fundHackaton,
             hackatonState,
+            isCommitteMember,
+            contract,
         }),
         [
             loading,
@@ -202,6 +211,8 @@ export const useHackatonManagerContext = () => {
             registerParticipant,
             addCID,
             fundHackaton,
+            isCommitteMember,
+            contract,
         ]
     )
 
