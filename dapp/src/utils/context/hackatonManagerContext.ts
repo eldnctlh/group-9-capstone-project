@@ -101,7 +101,7 @@ export const useHackatonManagerContext = () => {
 
         const participants = []
         const participantsLength = await contract_.ParticipantsLength()
-        console.log(participantsLength)
+
         for (let i = 0; i < participantsLength; i++) {
             const participant = await contract_._participants(i)
             participants.push(participant)
