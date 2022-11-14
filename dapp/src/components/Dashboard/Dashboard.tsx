@@ -55,17 +55,21 @@ const Dashboard = () => {
         </div>
     ) : (
         <>
-            <div className="mt-10 py-10 bg-zinc-800">
+            <div className="p-4 bg-zinc-800 rounded-xl">
                 <div className="container mx-auto">
                     <div className="grid grid-cols-5 gap-4">
-                        <div className="col-span-3">
+                        <div className="col-span-3 h-full flex flex-col justify-between">
                             <h2 className="text-4xl font-bold text-gray-100">
                                 {hackatonState.name}
                             </h2>
                             <p className="my-4 text-lg text-gray-400">{description}</p>
-                            <Button onClick={() => setIsModalOpen(true)}>Join Hackaton</Button>
+                            <div className="self-start">
+                                <Button className="w-48" onClick={() => setIsModalOpen(true)}>
+                                    Join Hackaton
+                                </Button>
+                            </div>
                         </div>
-                        <div className="col-span-2 bg-zinc-700 p-3">
+                        <div className="col-span-2 bg-zinc-700 p-3 rounded-2xl">
                             <div className="text-xs inline-flex items-center font-bold leading-sm uppercase px-3 py-1 bg-green-300 text-green-800 rounded-full">
                                 17 days to deadline
                             </div>
@@ -75,7 +79,7 @@ const Dashboard = () => {
                             <Button className="mb-4" onClick={() => setIsSubmitModalOpen(true)}>
                                 Submit project
                             </Button>
-                            <div className="h-px w-full bg-zinc-400"></div>
+                            <div className="h-px w-full bg-zinc-400 "></div>
                             <div className="flex justify-between">
                                 <h3 className="my-4 text-lg text-gray-200">
                                     <span className="font-bold">
@@ -126,12 +130,15 @@ const Dashboard = () => {
                                     {hackatonState.participants.length ? (
                                         hackatonState.participants.map((item: any) => (
                                             <div key={item[1]}>
-                                                <h3 className="my-2 text-lg font-bold text-gray-100">
-                                                    <div>Team name: {item[0]}</div>
-                                                </h3>
-                                                <div>Project name: {item[1]}</div>
-                                                <div>Project link: {item[2]}</div>
-                                                <div>Signup address: {item[6]}</div>
+                                                <div className="mb-4 mt-4">
+                                                    <h3 className="my-2 text-lg font-bold text-gray-100">
+                                                        <div>Team name: {item[0]}</div>
+                                                    </h3>
+                                                    <div>Project name: {item[1]}</div>
+                                                    <div>Project link: {item[2]}</div>
+                                                    <div>Signup address: {item[6]}</div>{" "}
+                                                </div>
+                                                <hr />
                                             </div>
                                         ))
                                     ) : (
