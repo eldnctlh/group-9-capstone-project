@@ -12,13 +12,8 @@ import Link from "next/link"
 import Control from "../../../assets/control.png"
 import Logo from "../../../assets/logo.png"
 import Chart_fill from "../../../assets/Chart_fill.png"
-import Chat from "../../../assets/Chat.png"
 import User from "../../../assets/User.png"
 import Calendar from "../../../assets/Calendar.png"
-import Search from "../../../assets/Search.png"
-import Chart from "../../../assets/Chart.png"
-import Folder from "../../../assets/Folder.png"
-import Setting from "../../../assets/Setting.png"
 import useMetamask from "hooks/use-metamask"
 
 const SideBar = ({ children }) => {
@@ -92,22 +87,27 @@ const SideBar = ({ children }) => {
                 {open ? (
                     <div>
                         <Button
+                            className="w-full"
                             onClick={wallet.address ? handleDisconnectWallet : handleConnectWallet}
                         >
-                            {wallet.address ? truncateEthAddress(wallet.address) : "Connect Wallet"}
+                            {wallet.address && wallet.balance ? (
+                                <div className="w-full flex flex-row justify-between">
+                                    <div>{truncateEthAddress(wallet.address)}</div>
+                                    <div className="bg-blue-200 text-blue-800 px-2 font-bold rounded-r-md inline-flex items-center">
+                                        {(+ethers.utils.formatEther(wallet.balance)).toFixed(2)} ETH
+                                    </div>
+                                </div>
+                            ) : (
+                                "Connect Wallet"
+                            )}
                         </Button>
-                        {wallet.address && wallet.balance ? (
-                            <span className="bg-blue-200 text-blue-800 -m-4 py-2 px-4 pl-6 font-bold rounded-r-xl inline-flex items-center">
-                                {(+ethers.utils.formatEther(wallet.balance)).toFixed(2)} ETH
-                            </span>
-                        ) : null}
                     </div>
                 ) : (
                     <li
                         className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4 
                                `}
                     >
-                        <Image width={30} height={30} alt="icon" src={Setting} />
+                        <Image width={30} height={30} alt="icon" src={User} />
                     </li>
                 )}
             </div>

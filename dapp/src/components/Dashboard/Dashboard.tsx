@@ -119,8 +119,8 @@ const Dashboard = () => {
                             <div className="col-span-2">
                                 <p className="my-2 text-lg text-gray-100">
                                     {hackatonState.participants.length ? (
-                                        hackatonState.participants.map((item) => (
-                                            <div>
+                                        hackatonState.participants.map((item: any) => (
+                                            <div key={item[1]}>
                                                 <h3 className="my-2 text-lg font-bold text-gray-100">
                                                     <div>Team name: {item[0]}</div>
                                                 </h3>
