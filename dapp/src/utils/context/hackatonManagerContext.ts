@@ -11,6 +11,12 @@ export type Track = {
     trackPrize: string
 }
 
+export type AddPrizeToTrack = {
+    trackName: string
+    prizeName: string
+    prizeAmount: string
+}
+
 type OnChainTrack = {
     name: string
     poolAmount: number
@@ -41,6 +47,7 @@ type HackatonManager = {
     createSignedContract: (signer: Signer) => void
     resetSignedContract: () => void
     createTracks: (tracks: Track) => void
+    addPrizeToTrack: (AddPrizeToTrack: AddPrizeToTrack) => void
     registerParticipant: (participant: Participant) => void
     addCID: (CID: string) => void
     fundHackaton: (amount: string) => void
@@ -156,6 +163,20 @@ export const useHackatonManagerContext = () => {
         }
     }
 
+    
+    const addPrizeToTrack = async (addPrizeToTrack: AddPrizeToTrack) => {
+        if (signedContract) {
+            const rc = await signedContract.addPrizeToTrack(
+                addPrizeToTrack.trackName,
+                addPrizeToTrack.prizeName
+                ethers.utils.parseEther(addPrizeToTrack.prizeAmount)
+            )
+            await rc.wait()
+            await updateHackatonState(contract)
+        }
+    }
+
+
     const registerParticipant = async (participant: Participant) => {
         if (signedContract) {
             const rc = await signedContract.registerParticipant(
@@ -211,6 +232,7 @@ export const useHackatonManagerContext = () => {
             loading,
             initHackatonManager,
             createTracks,
+            addPrizeToTrack,
             createSignedContract,
             resetSignedContract,
             registerParticipant,
@@ -227,6 +249,7 @@ export const useHackatonManagerContext = () => {
             hackatonState,
             initHackatonManager,
             createTracks,
+            addPrizeToTrack,
             createSignedContract,
             resetSignedContract,
             registerParticipant,

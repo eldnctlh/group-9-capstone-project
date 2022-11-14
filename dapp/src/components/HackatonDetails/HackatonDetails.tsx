@@ -9,6 +9,7 @@ import Loader from "components/shared/Loader"
 import { getDescription } from "utils/services/web3Storage"
 import useWallet from "utils/context/walletContext"
 import SetWinner from "components/forms/SetWinner"
+import AddPrizeToTrack from "components/forms/AddPrizeToTrack"
 
 const HackatonDetails = () => {
     const [description, setDescription] = useState<string>("")
@@ -99,6 +100,15 @@ const HackatonDetails = () => {
                             <div className="ml-5 h-px w-full bg-zinc-400"></div>
                         </div>{" "}
                         <HackatonMainData />
+
+                        <div className="flex items-center mt-4">
+                            <h2 className="text-xl font-bold text-gray-200 whitespace-nowrap">
+                                Add prizes
+                            </h2>
+                            <div className="ml-5 h-px w-full bg-zinc-400"></div>
+                        </div>
+                        <AddPrizeToTrack />
+
                         <div className="flex items-center mt-4">
                             <h2 className="text-xl font-bold text-gray-200 whitespace-nowrap">
                                 Pick winner
