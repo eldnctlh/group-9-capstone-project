@@ -2,8 +2,8 @@
 import { ethers, BigNumber, Contract, Signer } from "ethers"
 import { createContext, useContext, useMemo, useState } from "react"
 
-// import abi from "constants/abi/hackatonManagerFactoryAbi"
-import abi from "../../../../contracts/artifacts/contracts/HackathonManagerFactory.sol/HackathonManagerFactory.json"
+import abi from "constants/abi/hackatonManagerFactoryAbi"
+// import abi from "../../../../contracts/artifacts/contracts/HackathonManagerFactory.sol/HackathonManagerFactory.json"
 import contractAddresses from "constants/contractAddresses.json"
 
 type HackatonManagerFactory = {

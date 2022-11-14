@@ -1,8 +1,8 @@
 import { ethers, BigNumber, Contract, Signer } from "ethers"
 import { createContext, useContext, useMemo, useState } from "react"
 
-//import abi from "constants/abi/hackatonManagerAbi"
-import abi from "../../../../contracts/artifacts/contracts/HackathonManager.sol/HackathonManager.json"
+import abi from "constants/abi/hackatonManagerAbi"
+// import abi from "../../../../contracts/artifacts/contracts/HackathonManager.sol/HackathonManager.json"
 
 // import { retrieve } from "utils/services/web3Storage"
 
@@ -163,7 +163,6 @@ export const useHackatonManagerContext = () => {
         }
     }
 
-    
     const addPrizeToTrack = async (priceForTrack: PriceForTrack) => {
         if (signedContract) {
             const rc = await signedContract.addPrizeToTrack(
@@ -175,7 +174,6 @@ export const useHackatonManagerContext = () => {
             await updateHackatonState(contract)
         }
     }
-
 
     const registerParticipant = async (participant: Participant) => {
         if (signedContract) {
