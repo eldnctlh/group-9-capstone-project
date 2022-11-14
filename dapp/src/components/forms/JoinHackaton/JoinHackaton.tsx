@@ -5,6 +5,7 @@ import Input from "components/shared/Input"
 import Button from "components/shared/Button"
 import useHackatonManager, { Participant } from "utils/context/hackatonManagerContext"
 import useWallet from "utils/context/walletContext"
+import { extractRevertReason } from "utils/helpers"
 
 const JoinHackaton: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(false)
@@ -25,7 +26,9 @@ const JoinHackaton: React.FC = () => {
             toast(`Joined to hackaton as ${participant.teamName}`)
         } catch (err) {
             console.log(err)
-            toast.error(err.message)
+            const msg = extractRevertReason(err)
+            console.log(err)
+            toast.error(msg || err.message)
         }
         setLoading(false)
     }

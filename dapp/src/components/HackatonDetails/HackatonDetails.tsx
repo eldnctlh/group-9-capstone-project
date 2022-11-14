@@ -8,6 +8,7 @@ import useHackatonManager from "utils/context/hackatonManagerContext"
 import Loader from "components/shared/Loader"
 import { getDescription } from "utils/services/web3Storage"
 import useWallet from "utils/context/walletContext"
+import SetWinner from "components/forms/SetWinner"
 
 const HackatonDetails = () => {
     const [description, setDescription] = useState<string>("")
@@ -91,8 +92,20 @@ const HackatonDetails = () => {
                             ETH remains
                         </p>
                         {renderTracks()}
-
+                        <div className="flex items-center my-4">
+                            <h2 className="text-xl font-bold text-gray-200 whitespace-nowrap">
+                                Add tracks
+                            </h2>
+                            <div className="ml-5 h-px w-full bg-zinc-400"></div>
+                        </div>{" "}
                         <HackatonMainData />
+                        <div className="flex items-center mt-4">
+                            <h2 className="text-xl font-bold text-gray-200 whitespace-nowrap">
+                                Pick winner
+                            </h2>
+                            <div className="ml-5 h-px w-full bg-zinc-400"></div>
+                        </div>
+                        <SetWinner />
                     </div>
                     <div className="col-span-2 py-10">
                         <h2 className="text-4xl my-5 font-bold text-gray-100">
