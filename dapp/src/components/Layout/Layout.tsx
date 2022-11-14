@@ -1,5 +1,6 @@
 import React from "react"
 import Header from "components/Header"
+import SideBar from "components/SideBar"
 
 type Props = {
     children?: JSX.Element | JSX.Element[]
@@ -7,11 +8,11 @@ type Props = {
 
 const Layout = ({ children }: Props) => {
     return (
-        <div>
-            <div className="py-2 sticky top-0 z-50 bg-zinc-800">
+        <div className="h-screen overflow-hidden">
+            {/* <div className="py-2 top-0 z-50 bg-zinc-800">
                 <Header />
-            </div>
-            {children}
+            </div> */}
+            <SideBar>{children}</SideBar>
         </div>
     )
 }

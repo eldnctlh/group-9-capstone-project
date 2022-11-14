@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { ethers, BigNumber, Contract, Signer } from "ethers"
 import { createContext, useContext, useMemo, useState } from "react"
 
@@ -25,7 +26,6 @@ export const useHackatonManagerFactoryContext = () => {
     const [listOfHackatons, setListOfHackatons] = useState<Array<[string, string]>>()
 
     const createSignedContract = async (signer: Signer) => {
-
         const сontract_ = new ethers.Contract(
             contractAddresses.hackatonManagerFactoryContract[await signer.getChainId()],
             abi.abi,
@@ -41,7 +41,7 @@ export const useHackatonManagerFactoryContext = () => {
     const initHackatonManagerFactory = async () => {
         setLoading(true)
         const provider = new ethers.providers.Web3Provider(window.ethereum)
-        const chainId = (await provider.getNetwork()).chainId;
+        const chainId = (await provider.getNetwork()).chainId
         const contract_ = new ethers.Contract(
             contractAddresses.hackatonManagerFactoryContract[chainId],
             abi.abi,
@@ -57,9 +57,8 @@ export const useHackatonManagerFactoryContext = () => {
     }
 
     const getListOfHackatons = async (contract: Contract) => {
-
         const length = await contract.hackathonLength()
-        const hackatons: Array<[string, string]> = [];
+        const hackatons: Array<[string, string]> = []
 
         for (let i = 0; i < length; i++) {
             const name: string = await contract.hackathonNames(i)
@@ -77,7 +76,9 @@ export const useHackatonManagerFactoryContext = () => {
                 value: deploymentFee,
             })
             const res = await txReceipt.wait()
-            const event = res.events?.find((event) => event.event === "HackCreated")
+            const event = res.events?.find(
+                (event: { event: string }) => event.event === "HackCreated"
+            )
             const hackatonAddress = event?.args?._contractAddress
             setLoading(false)
             return hackatonAddress

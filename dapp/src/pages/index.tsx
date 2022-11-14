@@ -58,6 +58,12 @@ const Home: NextPage = () => {
             // Twitter: "na",
             textSize: "text-2xl",
         },
+        {
+            name: "Aashir Sohail",
+            LinkedIn: "https://www.linkedin.com/in/aashir-sohail/",
+            Twitter: "https://twitter.com/AashirSohail6",
+            textSize: "text-2xl",
+        },
     ]
 
     return (
@@ -150,14 +156,21 @@ const Home: NextPage = () => {
 
                     <div className="flex justify-between gap-5">
                         {teamMates.map((eachMember) => (
-                            <div className="bg-black/90 rounded-lg px-5 py-16 border-2 border-[#fb016e]/50 hover:border-[#fb016e] flex-1">
+                            <div
+                                key={eachMember.name}
+                                className="bg-black/90 rounded-lg px-5 py-16 border-2 border-[#fb016e]/50 hover:border-[#fb016e] flex-1"
+                            >
                                 <h3 className={`font-semibold ${eachMember.textSize}`}>
                                     {eachMember.name}
                                 </h3>
 
                                 <div className="flex gap-5 justify-center pt-5">
                                     {eachMember.Twitter ? (
-                                        <a href={eachMember.Twitter} target="_blank">
+                                        <a
+                                            href={eachMember.Twitter}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                        >
                                             <FaTwitter />
                                         </a>
                                     ) : (
@@ -165,7 +178,11 @@ const Home: NextPage = () => {
                                     )}
 
                                     {eachMember.LinkedIn ? (
-                                        <a href={eachMember.LinkedIn} target="_blank">
+                                        <a
+                                            href={eachMember.LinkedIn}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                        >
                                             <FaLinkedinIn />
                                         </a>
                                     ) : (
