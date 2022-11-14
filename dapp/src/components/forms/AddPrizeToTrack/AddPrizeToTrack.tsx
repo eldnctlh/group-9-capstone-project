@@ -4,15 +4,12 @@ import { useRouter } from "next/router"
 import { toast } from "react-toastify"
 import Input from "components/shared/Input"
 import Button from "components/shared/Button"
-import useHackatonManager, { AddPrizeToTrack } from "utils/context/hackatonManagerContext"
+import useHackatonManager, { PriceForTrack } from "utils/context/hackatonManagerContext"
 import useWallet from "utils/context/walletContext"
-import { makeFileObjects, storeFiles } from "utils/services/web3Storage"
 import { ethers } from "ethers"
 import { extractRevertReason } from "utils/helpers"
 
 const AddPrizeToTrack: React.FC = () => {
-    // const [coverImageSrc, setCoverImageSrc] = useState<string>("")
-    // const [profileImageSrc, setProfileImageSrc] = useState<string>("")
     const [loading, setLoading] = useState<boolean>(false)
     const { addCID, hackatonState, addPrizeToTrack } = useHackatonManager()
 
@@ -20,30 +17,27 @@ const AddPrizeToTrack: React.FC = () => {
     const { connected } = useWallet()
 
     const {
-        control,
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm({
-        defaultValues: {
-            addPrizeToTrack: { trackName: "", prizeName: "", prizeAmount: "" },
-        },
-    })
-    const { fields, append, remove } =  useFieldArray({
-        control,
-        name: "addPrizeToTrack",
-    })
+    } = useForm()
 
-
-    const onSubmit = async ({ addPrizeToTrack} : {addPrizeToTrack: AddPrizeToTrack } ) => {
+    const onSubmit = async data => { 
+        console.log(data);
+    
         setLoading(true)
 
+        const addPrice : PriceForTrack =
+        {
+            trackName: data.trackName,
+            prizeAmount: data.prizeAmount,
+            prizeName : data.prizeName
+        }
             
-            console.log({addPrizeToTrack}) // <-- stays empty
             try {
-                await  addPrizeToTrack(addPrizeToTrack)
+                await  addPrizeToTrack(addPrice)
                 
-                toast(`Track ${addPrizeToTrack.prizeName} added`)
+                toast(`${addPrice.prizeName} added to track ${addPrice.trackName} for a whopping: ${addPrice.prizeAmount} ETH`)
             } catch (err) {
                 const msg = extractRevertReason(err)
 
@@ -74,6 +68,7 @@ const AddPrizeToTrack: React.FC = () => {
          
                 <div  className="flex justify-between items-end">
                     <div className="flex">
+                        <input {...register("trackName")} value ={track.name} type="hidden" />
                         <Input
                             placeholder={`Prize Name`}
                             label={`Prize Name`}
@@ -141,7 +136,7 @@ const AddPrizeToTrack: React.FC = () => {
         }
     }
 
-    // hackatonManager.addPrizeToTrack(trackName, prizeName, prizeAmount))
+    
     return (
        
       
@@ -149,18 +144,6 @@ const AddPrizeToTrack: React.FC = () => {
             {renderForms()}
             
             </div>
-    //    <form onSubmit={handleSubmit(onSubmit)}>
-    //         <Input
-    //             placeholder="Hackaton Description"
-    //             label="Hackaton Description"
-    //             error={errors.description && "Hackaton description is required."}
-    //             {...register("description", { required: true })}
-    //         />
-
-        //     <Button loading={loading} disabled={!connected || loading} className="mt-5">
-        //         Add data
-        //     </Button>
-        // </form>
     )
 }
 export default AddPrizeToTrack
