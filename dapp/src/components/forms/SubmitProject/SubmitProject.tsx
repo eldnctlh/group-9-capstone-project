@@ -7,9 +7,9 @@ import useHackatonManager, { Participant } from "utils/context/hackatonManagerCo
 import useWallet from "utils/context/walletContext"
 import { extractRevertReason } from "utils/helpers"
 
-const JoinHackaton: React.FC = () => {
+const SubmitProject: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(false)
-    const { registerParticipant } = useHackatonManager()
+    const { submitProject } = useHackatonManager()
 
     const { connected } = useWallet()
 
@@ -19,11 +19,11 @@ const JoinHackaton: React.FC = () => {
         formState: { errors },
     } = useForm<Participant>()
 
-    const onSubmit = async (participant: Participant) => {
+    const onSubmit = async (form: any) => {
         setLoading(true)
         try {
-            await registerParticipant(participant)
-            toast(`Joined to hackaton as ${participant.teamName}`)
+            await submitProject(form.teamName)
+            toast(`Submitted project by ${form.teamName}`)
         } catch (err) {
             console.log(err)
             const msg = extractRevertReason(err)
@@ -41,22 +41,10 @@ const JoinHackaton: React.FC = () => {
                 error={errors.teamName && "Team name is required."}
                 {...register("teamName", { required: true })}
             />
-            <Input
-                placeholder="Project Name"
-                label="Project Name"
-                error={errors.projectName && "Project name is required."}
-                {...register("projectName", { required: true })}
-            />
-            <Input
-                placeholder="Project Link"
-                label="Project Link"
-                error={errors.projectLink && "Project link is required."}
-                {...register("projectLink", { required: true })}
-            />
             <Button loading={loading} disabled={!connected || loading} className="mt-5">
                 Submit
             </Button>
         </form>
     )
 }
-export default JoinHackaton
+export default SubmitProject

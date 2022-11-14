@@ -11,6 +11,12 @@ export type Track = {
     trackPrize: string
 }
 
+export type PriceForTrack = {
+    trackName: string
+    prizeName: string
+    prizeAmount: string
+}
+
 type OnChainTrack = {
     name: string
     poolAmount: number
@@ -41,10 +47,13 @@ type HackatonManager = {
     createSignedContract: (signer: Signer) => void
     resetSignedContract: () => void
     createTracks: (tracks: Track) => void
+    addPrizeToTrack: (priceForTrack: PriceForTrack) => void
     registerParticipant: (participant: Participant) => void
     addCID: (CID: string) => void
     fundHackaton: (amount: string) => void
     isCommitteMember: (contract: Contract, address: string) => void
+    setWinner: (trackName: string, prize: string, teamName: string) => void
+    submitProject: (teamName: string) => void
     contract: Contract
 }
 
@@ -154,6 +163,20 @@ export const useHackatonManagerContext = () => {
         }
     }
 
+    
+    const addPrizeToTrack = async (priceForTrack: PriceForTrack) => {
+        if (signedContract) {
+            const rc = await signedContract.addPrizeToTrack(
+                priceForTrack.trackName,
+                priceForTrack.prizeName,
+                ethers.utils.parseEther(priceForTrack.prizeAmount)
+            )
+            await rc.wait()
+            await updateHackatonState(contract)
+        }
+    }
+
+
     const registerParticipant = async (participant: Participant) => {
         if (signedContract) {
             const rc = await signedContract.registerParticipant(
@@ -180,6 +203,22 @@ export const useHackatonManagerContext = () => {
         }
     }
 
+    const setWinner = async (trackName: string, prize: string, teamName: string) => {
+        if (signedContract) {
+            const rc = await signedContract.captureWinner(trackName, prize, teamName)
+            await rc.wait()
+            await updateHackatonState(contract)
+        }
+    }
+
+    const submitProject = async (teamName: string) => {
+        if (signedContract) {
+            const rc = await signedContract.submitProject(teamName)
+            await rc.wait()
+            await updateHackatonState(contract)
+        }
+    }
+
     const addCID = async (CID: string) => {
         if (signedContract) {
             const rc = await signedContract.addCID(CID)
@@ -193,6 +232,7 @@ export const useHackatonManagerContext = () => {
             loading,
             initHackatonManager,
             createTracks,
+            addPrizeToTrack,
             createSignedContract,
             resetSignedContract,
             registerParticipant,
@@ -200,6 +240,8 @@ export const useHackatonManagerContext = () => {
             fundHackaton,
             hackatonState,
             isCommitteMember,
+            setWinner,
+            submitProject,
             contract,
         }),
         [
@@ -207,12 +249,15 @@ export const useHackatonManagerContext = () => {
             hackatonState,
             initHackatonManager,
             createTracks,
+            addPrizeToTrack,
             createSignedContract,
             resetSignedContract,
             registerParticipant,
             addCID,
             fundHackaton,
             isCommitteMember,
+            setWinner,
+            submitProject,
             contract,
         ]
     )

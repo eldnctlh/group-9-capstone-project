@@ -5,6 +5,7 @@ import { ethers } from "ethers"
 import Button from "components/shared/Button"
 import Modal from "components/shared/Modal"
 import JoinHackaton from "components/forms/JoinHackaton"
+import SubmitProject from "components/forms/SubmitProject"
 import useHackatonManager from "utils/context/hackatonManagerContext"
 import Loader from "components/shared/Loader"
 import { getDescription } from "utils/services/web3Storage"
@@ -12,6 +13,7 @@ import { getDescription } from "utils/services/web3Storage"
 const Dashboard = () => {
     const [deadline, setDeadline] = useState<string>("")
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
+    const [isSubmitModalOpen, setIsSubmitModalOpen] = useState<boolean>(false)
     const [description, setDescription] = useState<string>("")
     const { initHackatonManager, hackatonState, loading } = useHackatonManager()
     const { query } = useRouter()
@@ -70,6 +72,9 @@ const Dashboard = () => {
                             <h3 className="my-4 text-lg font-bold text-gray-100">
                                 Deadline {deadline}
                             </h3>
+                            <Button className="mb-4" onClick={() => setIsSubmitModalOpen(true)}>
+                                Submit project
+                            </Button>
                             <div className="h-px w-full bg-zinc-400"></div>
                             <div className="flex justify-between">
                                 <h3 className="my-4 text-lg text-gray-200">
@@ -143,6 +148,15 @@ const Dashboard = () => {
             <Modal title="Join Hackaton" isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
                 <div className="w-96">
                     <JoinHackaton />
+                </div>
+            </Modal>
+            <Modal
+                title="Submit project"
+                isOpen={isSubmitModalOpen}
+                onClose={() => setIsSubmitModalOpen(false)}
+            >
+                <div className="w-96">
+                    <SubmitProject />
                 </div>
             </Modal>
         </>
