@@ -46,6 +46,7 @@ type HackatonManager = {
     fundHackaton: (amount: string) => void
     isCommitteMember: (contract: Contract, address: string) => void
     setWinner: (trackName: string, prize: string, teamName: string) => void
+    submitProject: (teamName: string) => void
     contract: Contract
 }
 
@@ -189,6 +190,14 @@ export const useHackatonManagerContext = () => {
         }
     }
 
+    const submitProject = async (teamName: string) => {
+        if (signedContract) {
+            const rc = await signedContract.submitProject(teamName)
+            await rc.wait()
+            await updateHackatonState(contract)
+        }
+    }
+
     const addCID = async (CID: string) => {
         if (signedContract) {
             const rc = await signedContract.addCID(CID)
@@ -210,6 +219,7 @@ export const useHackatonManagerContext = () => {
             hackatonState,
             isCommitteMember,
             setWinner,
+            submitProject,
             contract,
         }),
         [
@@ -224,6 +234,7 @@ export const useHackatonManagerContext = () => {
             fundHackaton,
             isCommitteMember,
             setWinner,
+            submitProject,
             contract,
         ]
     )
