@@ -168,7 +168,7 @@ export const useHackatonManagerContext = () => {
         if (signedContract) {
             const rc = await signedContract.addPrizeToTrack(
                 addPrizeToTrack.trackName,
-                addPrizeToTrack.prizeName
+                addPrizeToTrack.prizeName,
                 ethers.utils.parseEther(addPrizeToTrack.prizeAmount)
             )
             await rc.wait()
