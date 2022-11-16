@@ -14,6 +14,11 @@ const config: HardhatUserConfig = {
     goerli: {
       url: `https://eth-goerli.alchemyapi.io/v2/${ALCHEMY_API_KEY}`,
       accounts: [`${PRIVATE_KEY}`]
+    },
+    altlayer_test: {
+      url: 'https://devnet-rpc.altlayer.io/',
+      accounts: [`${PRIVATE_KEY}`],
+      chainId: 9990
     }
   }
 };
