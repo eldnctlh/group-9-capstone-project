@@ -74,9 +74,17 @@ const ListHackaton = () => {
             ) : (
                 <div className="grid grid-cols-5 gap-4">
                     <div className="col-span-2">
-                        {listOfHackatons?.map((item) => (
+                        
+                    {listOfHackatons ? (
+                        listOfHackatons?.map((item) => (
                             <HackatonComponent name={item[0]} address={item[1]} />
-                        ))}
+                        ))
+                    ) :
+                    (
+                        <span>Please connect to Altlayer-dev or Goerli</span>
+                    )}
+                            
+                    
                     </div>
                 </div>
             )}

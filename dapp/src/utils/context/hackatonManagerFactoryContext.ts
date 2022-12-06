@@ -26,11 +26,20 @@ export const useHackatonManagerFactoryContext = () => {
     const [listOfHackatons, setListOfHackatons] = useState<Array<[string, string]>>()
 
     const createSignedContract = async (signer: Signer) => {
+        const contractAddr = contractAddresses.hackatonManagerFactoryContract[await signer.getChainId()]
+        
+        if(contractAddr === undefined)
+        {
+            console.log("wrong chain")
+            return
+        }
+
         const сontract_ = new ethers.Contract(
             contractAddresses.hackatonManagerFactoryContract[await signer.getChainId()],
             abi.abi,
             signer
         )
+        
         setSignedContract(сontract_)
     }
 
@@ -42,8 +51,18 @@ export const useHackatonManagerFactoryContext = () => {
         setLoading(true)
         const provider = new ethers.providers.Web3Provider(window.ethereum)
         const chainId = (await provider.getNetwork()).chainId
+        const contractAddr = contractAddresses.hackatonManagerFactoryContract[chainId]
+        
+        if(contractAddr === undefined)
+        {
+            console.log("wrong chain")
+            setLoading(false)    
+            return;
+        }
+
+        console.log(contractAddr)
         const contract_ = new ethers.Contract(
-            contractAddresses.hackatonManagerFactoryContract[chainId],
+            contractAddr,
             abi.abi,
             provider
         )
